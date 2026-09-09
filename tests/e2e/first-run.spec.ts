@@ -1,0 +1,53 @@
+import { expect,test } from "@playwright/test";
+import { password,request } from "./helpers";
+
+test("empty container installation reaches workspace, project, work item and accepted email invitation",async({page,browser})=>{
+  test.skip(process.env.E2E_FIRST_RUN!=="1","Requires a newly created, isolated Compose installation");
+  test.setTimeout(120_000);
+  page.setDefaultTimeout(15_000);
+  const instance=await page.request.get("/api/v1/instance");expect((await instance.json()).data.is_setup_done).toBe(false);
+  await page.goto("/");await page.waitForURL(/\/setup/);
+  await page.locator('input[name="instance_name"]').fill("Container acceptance instance");
+  await page.locator('input[name="display_name"]').fill("安装验收管理员");
+  await page.locator('input[type="email"]').fill("bootstrap-admin@myjira.local");
+  await page.locator('input[type="password"]').fill(password);
+  await page.screenshot({path:".local/evidence/browser-container-setup.png",fullPage:true});
+  await page.getByRole("button",{name:"完成设置",exact:true}).click();
+  await page.locator('input[name="workspace_name"]').fill("独立安装验收团队");
+  await page.locator('input[name="workspace_slug"]').fill("bootstrap-acceptance");
+  await page.getByRole("button",{name:"创建工作区",exact:true}).click();
+  await page.waitForURL(/\/w\/bootstrap-acceptance\//);
+  await page.goto("/w/bootstrap-acceptance/projects");
+  await page.getByRole("button",{name:"创建项目",exact:true}).first().click();
+  const dialog=page.getByRole("dialog");
+  await dialog.locator('input[name="project_name"]').fill("容器中的第一个项目");await dialog.locator('input[name="identifier"]').fill("FIRST");
+  const creating=page.waitForResponse(response=>response.request().method()==="POST"&&response.url().endsWith("/projects"));
+  await dialog.getByRole("button",{name:"创建项目",exact:true}).click();
+  const projectResponse=await creating;expect(projectResponse.status()).toBe(201);const project=(await projectResponse.json()).data;
+  const route=`/w/bootstrap-acceptance/projects/${project.id}`;
+  await page.goto(`${route}/issues`);await page.getByRole("button",{name:"添加工作项",exact:true}).first().click();
+  await page.getByRole("textbox",{name:"工作项标题"}).fill("初始化后的第一项工作");
+  await page.getByRole("dialog").locator(".tiptap").fill("Created entirely through the container application.");
+  await page.getByRole("button",{name:"创建工作项",exact:true}).click();await expect(page.getByText("初始化后的第一项工作",{exact:true})).toBeVisible();
+  await page.goto("/w/bootstrap-acceptance/settings/members");await page.getByRole("button",{name:"邀请成员",exact:true}).click();
+  await page.getByRole("dialog").locator('input[type="email"]').fill("bootstrap-member@myjira.local");
+  const inviting=page.waitForResponse(response=>response.request().method()==="POST"&&response.url().endsWith("/invitations"));
+  await page.getByRole("dialog").getByRole("button",{name:"创建邀请",exact:true}).click();
+  const invitationResponse=await inviting;expect(invitationResponse.status()).toBe(201);
+  const mailbox=process.env.E2E_MAILPIT_URL??"http://127.0.0.1:28025";
+  let invitationURL="";
+  await expect.poll(async()=>{const response=await page.request.get(`${mailbox}/api/v1/messages?limit=100`);const mail=(await response.json()).messages.find((mail:{ID:string;To:{Address:string}[]})=>mail.To.some(to=>to.Address==="bootstrap-member@myjira.local"));if(!mail)return false;const message=await page.request.get(`${mailbox}/api/v1/message/${mail.ID}`);const text=(await message.json()).Text as string;invitationURL=text.match(/https?:\/\/[^\s<>]+\/invitations\/[^\s<>]+/)?.[0]??"";return Boolean(invitationURL)},{timeout:25_000}).toBe(true);
+  const invitedContext=await browser.newContext();const invited=await invitedContext.newPage();
+  invited.setDefaultTimeout(15_000);
+  try{
+    await invited.goto("/register");await invited.locator('input[name="display_name"]').fill("安装验收成员");await invited.locator('input[type="email"]').fill("bootstrap-member@myjira.local");await invited.locator('input[type="password"]').fill(password);await invited.locator('button[type="submit"]').click();
+    await expect.poll(async()=>{const response=await request(invited,"GET","/api/v1/auth/me");return response.status}).toBe(200);
+    await invited.goto(invitationURL);await invited.getByRole("button",{name:"接受邀请",exact:true}).click();await invited.waitForURL(/\/w\/bootstrap-acceptance\//,{timeout:15_000});
+    await expect(invited.locator("main")).toBeVisible();
+  }finally{await invitedContext.close();}
+  await page.goto("/admin");await expect(page.locator("main")).toBeVisible();await page.screenshot({path:".local/evidence/browser-container-admin.png",fullPage:true});
+  const document=await request(page,"POST",`/api/v1/workspaces/${project.workspace_id}/projects/${project.id}/pages`,{name:"Container document"});expect(document.status).toBe(201);
+  await page.goto(`${route}/pages/${document.body.data.id}`);const editor=page.locator(".document-editor .tiptap");await expect(editor).toHaveAttribute("contenteditable","true");await editor.fill("Persistent collaboration inside containers.");
+  await expect.poll(async()=>(await request(page,"GET",`/api/v1/workspaces/${project.workspace_id}/projects/${project.id}/pages/${document.body.data.id}/content`)).body.data.content_html).toContain("Persistent collaboration inside containers.");
+  const name=encodeURIComponent(`${project.workspace_id}:${project.id}:${document.body.data.id}`);const pdf=await page.request.get(`/live/documents/${name}/pdf`);expect(pdf.status()).toBe(200);expect((await pdf.body()).subarray(0,5).toString()).toBe("%PDF-");
+});

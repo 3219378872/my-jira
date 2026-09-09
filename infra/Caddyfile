@@ -1,0 +1,22 @@
+:80 {
+	encode zstd gzip
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy same-origin
+		X-Frame-Options SAMEORIGIN
+	}
+	handle /api/* {
+		reverse_proxy api:8088
+	}
+	handle_path /live* {
+		reverse_proxy live:3101
+	}
+	handle /healthz {
+		respond "ok" 200
+	}
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}

@@ -1,0 +1,15 @@
+{
+  "name": "my-jira",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@10.24.0",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "pnpm --filter @myjira/editor-schema build && pnpm --filter @my-jira/web dev",
+    "build": "pnpm --filter @myjira/editor-schema build && pnpm --filter @my-jira/web build",
+    "typecheck": "pnpm --filter @myjira/editor-schema build && pnpm --filter @my-jira/web typecheck",
+    "test": "pnpm --filter @my-jira/web test",
+    "test:e2e": "playwright test"
+  },
+  "devDependencies": { "@playwright/test": "^1.56.1" }
+}
