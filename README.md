@@ -9,6 +9,71 @@
 也不提供旧 API、数据库或历史数据兼容。已完成当前社区功能范围的原创实现和
 本地验收，[功能差距与边界](docs/PARITY_GAPS.md)保留逐项修复及未验证范围。
 
+## 界面预览
+
+以下截图来自本项目运行中的原创前端，使用本地演示数据，展示浅色与深色主题。
+点击图片可查看原始尺寸。
+
+| 工作项列表 · 浅色 | 看板 · 深色 |
+| --- | --- |
+| [![按状态分组的工作项列表](docs/screenshots/work-items-light.png)](docs/screenshots/work-items-light.png) | [![按状态分列的深色看板](docs/screenshots/kanban-dark.png)](docs/screenshots/kanban-dark.png) |
+
+| 工作项详情 | 协作文档 |
+| --- | --- |
+| [![工作项详情、属性和评论](docs/screenshots/work-item-detail-light.png)](docs/screenshots/work-item-detail-light.png) | [![文档编辑器和协作连接状态](docs/screenshots/document-editor-light.png)](docs/screenshots/document-editor-light.png) |
+
+| 个人设置 | 公开项目 · 深色 |
+| --- | --- |
+| [![个人资料与设置导航](docs/screenshots/personal-settings-light.png)](docs/screenshots/personal-settings-light.png) | [![公开项目、投票与需求入口](docs/screenshots/public-project-dark.png)](docs/screenshots/public-project-dark.png) |
+
+## 后端架构
+
+业务后端采用 Go 模块化单体，包含身份与工作区、项目与工作项、周期与模块、
+文档、通知、文件及集成等领域。API 与后台 Worker 独立运行；Node 服务负责
+实时文档协作与 PDF 渲染。下图展示当前 Docker Compose 部署的主要调用关系。
+
+```mermaid
+flowchart TB
+    browser["浏览器<br/>React / TypeScript"]
+    web["Caddy<br/>静态前端与反向代理"]
+    api["Go API<br/>Gin · Ent · 领域模块"]
+    live["Node live<br/>Hocuspocus / Yjs 协作<br/>Chromium PDF 渲染"]
+    postgres[("PostgreSQL<br/>业务数据 · 文档状态 · outbox")]
+    redis[("Redis<br/>Asynq 任务队列")]
+    s3[("S3 / MinIO<br/>附件与导出文件")]
+
+    subgraph worker["Go Worker 进程"]
+        dispatcher["Outbox Dispatcher<br/>扫描事件并记录投递结果"]
+        consumers["Asynq Consumers<br/>通知 · 导出 · Webhook"]
+    end
+
+    smtp["SMTP<br/>开发环境使用 Mailpit"]
+    webhook["外部 Webhook 接收端"]
+    ai["AI 提供商（当前配置）<br/>OpenAI Responses<br/>gpt-5.6-terra"]
+
+    browser --> web
+    web -->|/api/*| api
+    web -->|/live · WebSocket / PDF| live
+    live -->|权限 · 文档 · 附件| api
+    api -->|业务与 outbox 事务| postgres
+    postgres <-->|outbox 读取与标记| dispatcher
+    dispatcher -->|投递任务| redis
+    redis -->|消费与重试| consumers
+    consumers -->|业务读写| postgres
+    api -->|鉴权文件读写| s3
+    consumers -->|导出与报表| s3
+    consumers -->|发送邮件| smtp
+    consumers -->|事件投递| webhook
+    api -->|AI 文本辅助| ai
+```
+
+需要异步处理的业务变更与 outbox 事件在同一个 PostgreSQL 事务中提交；Worker 内的
+Dispatcher 将事件投递到 Redis，由 Asynq 执行任务并处理重试。Worker 还运行定时
+维护与过期文件清理。文档权限和持久化统一由 Go API 负责，协作服务通过内部 HTTP
+调用读写文档内容与 Yjs 状态。
+数据库迁移由独立的 `migrate` 一次性进程执行，完成后才启动 API 与 Worker。
+更多设计说明见 [架构决策](docs/ARCHITECTURE.md)和[数据库结构](docs/DATABASE.md)。
+
 ## 启动开发环境
 
 需要 Go 1.26、Node 22.12+、pnpm 10.24、Docker Compose。初次配置时将
