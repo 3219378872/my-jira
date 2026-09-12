@@ -60,6 +60,9 @@ func Build(routes gin.RoutesInfo) (S, error) {
 			schema := stringSchema()
 			if strings.HasSuffix(name, "ID") {
 				schema = uuidSchema()
+				if name == "versionID" && strings.Contains(route.Path, "/scenarios/") {
+					schema = version()
+				}
 				if name == "userID" && strings.Contains(route.Path, "/profiles/") {
 					schema = S{"anyOf": []any{uuidSchema(), enum("me")}}
 				}
@@ -84,8 +87,8 @@ func Build(routes gin.RoutesInfo) (S, error) {
 		responses := S{}
 		if entry.Status == 204 {
 			responses["204"] = S{"description": "The operation completed; no response body."}
-		} else if entry.Status == 302 {
-			responses["302"] = S{"description": "Browser redirect to the identity provider or application.", "headers": S{"Location": S{"schema": stringSchema(), "description": "Redirect destination."}}}
+		} else if entry.Status == 302 || entry.Status == 303 {
+			responses[fmt.Sprint(entry.Status)] = S{"description": "Browser redirect to the identity provider or application.", "headers": S{"Location": S{"schema": stringSchema(), "description": "Redirect destination."}}}
 		} else {
 			response := entry.Response
 			if !entry.Raw {
@@ -96,6 +99,9 @@ func Build(routes gin.RoutesInfo) (S, error) {
 				media = "application/json"
 			}
 			responses[fmt.Sprint(entry.Status)] = S{"description": "Successful response.", "content": S{media: S{"schema": response}}}
+		}
+		if route.Method == "POST" && path == "/github/webhook" {
+			responses["200"] = S{"description": "Signed GitHub ping accepted.", "content": S{"application/json": S{"schema": object(S{"data": object(S{"accepted": boolSchema()}, "accepted")}, "data")}}}
 		}
 		for code, text := range map[string]string{"400": "Invalid fields, JSON, identifiers, dates, or filters.", "401": "A current browser session or permitted workspace API token is required.", "403": "Insufficient role, invalid CSRF, or a disabled feature.", "404": "Resource is absent or outside the actor's current visible scope.", "409": "Concurrent version change, duplicate value, or a business invariant prevents the operation.", "429": "Request rate limit exceeded.", "500": "The operation could not be completed."} {
 			responses[code] = S{"description": text, "content": S{"application/json": S{"schema": ref("Error")}}}
@@ -143,11 +149,15 @@ func Build(routes gin.RoutesInfo) (S, error) {
 			"csrfHeader":      S{"type": "apiKey", "in": "header", "name": "X-CSRF-Token", "description": "Current token from GET /auth/csrf or the authentication response; must match the CSRF cookie."},
 			"csrfCookie":      S{"type": "apiKey", "in": "cookie", "name": "mj_csrf"},
 			"workspaceBearer": S{"type": "http", "scheme": "bearer", "bearerFormat": "mjt_...", "description": "Revocable API token restricted to one workspace. Cannot call account, instance, public-site mutation or credential-creation routes."},
+			"githubSignature": S{"type": "apiKey", "in": "header", "name": "X-Hub-Signature-256", "description": "sha256= followed by the HMAC of the exact raw request body using the independent GitHub App webhook secret. Browser CSRF and API tokens cannot authorize this endpoint."},
 		}},
 	}, nil
 }
 
 func security(access, method string) []any {
+	if access == "github" {
+		return []any{S{"githubSignature": []any{}}}
+	}
 	if access == "anonymous" {
 		return []any{}
 	}

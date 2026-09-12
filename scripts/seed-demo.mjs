@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 
 const base = process.env.MYJIRA_API_URL ?? "http://127.0.0.1:8088";
 const target = new URL(base);
+const appOrigin = process.env.MYJIRA_APP_ORIGIN ?? "http://127.0.0.1:4173";
 assert(["127.0.0.1", "localhost"].includes(target.hostname), "Demo fixtures are restricted to a local development instance");
 const email = process.env.MYJIRA_DEMO_EMAIL ?? "demo@myjira.local";
 const password = process.env.MYJIRA_DEMO_PASSWORD ?? "MyJira-Local-2026!";
@@ -11,7 +12,7 @@ let csrf = "";
 async function request(path, method = "GET", body) {
   const response = await fetch(`${base}/api/v1${path}`, {
     method,
-    headers: { "Content-Type": "application/json", Origin: "http://127.0.0.1:4173", Cookie: [...cookies].map(([key, value]) => `${key}=${value}`).join("; "), "X-CSRF-Token": csrf },
+    headers: { "Content-Type": "application/json", Origin: appOrigin, Cookie: [...cookies].map(([key, value]) => `${key}=${value}`).join("; "), "X-CSRF-Token": csrf },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   for (const cookie of response.headers.getSetCookie()) {

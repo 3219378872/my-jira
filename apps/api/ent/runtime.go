@@ -1205,6 +1205,38 @@ func init() {
 	workitemDescVersion := workitemFields[24].Descriptor()
 	// workitem.DefaultVersion holds the default value on creation for the version field.
 	workitem.DefaultVersion = workitemDescVersion.Default.(int64)
+	// workitemDescStoryRole is the schema descriptor for story_role field.
+	workitemDescStoryRole := workitemFields[27].Descriptor()
+	// workitem.DefaultStoryRole holds the default value on creation for the story_role field.
+	workitem.DefaultStoryRole = workitemDescStoryRole.Default.(string)
+	// workitemDescStoryGoal is the schema descriptor for story_goal field.
+	workitemDescStoryGoal := workitemFields[28].Descriptor()
+	// workitem.DefaultStoryGoal holds the default value on creation for the story_goal field.
+	workitem.DefaultStoryGoal = workitemDescStoryGoal.Default.(string)
+	// workitemDescStoryBenefit is the schema descriptor for story_benefit field.
+	workitemDescStoryBenefit := workitemFields[29].Descriptor()
+	// workitem.DefaultStoryBenefit holds the default value on creation for the story_benefit field.
+	workitem.DefaultStoryBenefit = workitemDescStoryBenefit.Default.(string)
+	// workitemDescAcceptanceCriteria is the schema descriptor for acceptance_criteria field.
+	workitemDescAcceptanceCriteria := workitemFields[30].Descriptor()
+	// workitem.DefaultAcceptanceCriteria holds the default value on creation for the acceptance_criteria field.
+	workitem.DefaultAcceptanceCriteria = workitemDescAcceptanceCriteria.Default.([]string)
+	// workitemDescMapPosition is the schema descriptor for map_position field.
+	workitemDescMapPosition := workitemFields[32].Descriptor()
+	// workitem.DefaultMapPosition holds the default value on creation for the map_position field.
+	workitem.DefaultMapPosition = workitemDescMapPosition.Default.(float64)
+	// workitemDescRequiredSkills is the schema descriptor for required_skills field.
+	workitemDescRequiredSkills := workitemFields[35].Descriptor()
+	// workitem.DefaultRequiredSkills holds the default value on creation for the required_skills field.
+	workitem.DefaultRequiredSkills = workitemDescRequiredSkills.Default.([]string)
+	// workitemDescAllocationWeights is the schema descriptor for allocation_weights field.
+	workitemDescAllocationWeights := workitemFields[36].Descriptor()
+	// workitem.DefaultAllocationWeights holds the default value on creation for the allocation_weights field.
+	workitem.DefaultAllocationWeights = workitemDescAllocationWeights.Default.([]map[string]interface{})
+	// workitemDescPlanningLocked is the schema descriptor for planning_locked field.
+	workitemDescPlanningLocked := workitemFields[37].Descriptor()
+	// workitem.DefaultPlanningLocked holds the default value on creation for the planning_locked field.
+	workitem.DefaultPlanningLocked = workitemDescPlanningLocked.Default.(bool)
 	// workitemDescID is the schema descriptor for id field.
 	workitemDescID := workitemFields[0].Descriptor()
 	// workitem.DefaultID holds the default value on creation for the id field.

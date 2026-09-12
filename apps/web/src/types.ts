@@ -114,6 +114,19 @@ export interface WorkItem {
   archived_at: string | null;
   is_draft: boolean;
   version: number;
+  requirement_type?: "epic" | "story" | "task" | null;
+  story_role?: string;
+  story_goal?: string;
+  story_benefit?: string;
+  acceptance_criteria?: string[];
+  activity_id?: ID | null;
+  map_position?: number;
+  estimated_minutes?: number | null;
+  remaining_minutes?: number | null;
+  required_skills?: string[];
+  allocation_weights?: { member_id: ID; weight: number }[];
+  planning_locked?: boolean;
+  dependency_ids?: ID[];
 }
 
 export type WorkItemMoveChanges = Partial<

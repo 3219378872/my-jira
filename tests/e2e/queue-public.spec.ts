@@ -1,6 +1,8 @@
 import {expect,test} from "@playwright/test";
 import {collaborator,login,projectAPI,request,workspace} from "./helpers";
 
+const mailpitURL = process.env.E2E_MAILPIT_URL ?? "http://127.0.0.1:28025";
+
 test("HTTP writes traverse Redis worker to notifications, SMTP, filtered exports and token reads",async({page,browser})=>{
   test.setTimeout(90_000);
   await login(page);const memberContext=await browser.newContext();const memberPage=await memberContext.newPage();const member=await collaborator(memberPage);
@@ -12,14 +14,14 @@ test("HTTP writes traverse Redis worker to notifications, SMTP, filtered exports
   const tokenContext=await browser.newContext();
   try{
     await expect.poll(async()=>(await request(memberPage,"GET",`/api/v1/workspaces/${workspace}/notifications?reason=assigned`)).body.data.some((notification:{entity_id:string})=>notification.entity_id===id),{timeout:25_000}).toBe(true);
-    await expect.poll(async()=>{const result=await page.request.get("http://127.0.0.1:28025/api/v1/messages?limit=100");const mail=await result.json();return mail.messages.some((message:{Subject:string;To:{Address:string}[]})=>message.Subject.includes(title)&&message.To.some(to=>to.Address===member.email))},{timeout:25_000}).toBe(true);
+    await expect.poll(async()=>{const result=await page.request.get(`${mailpitURL}/api/v1/messages?limit=100`);const mail=await result.json();return mail.messages.some((message:{Subject:string;To:{Address:string}[]})=>message.Subject.includes(title)&&message.To.some(to=>to.Address===member.email))},{timeout:25_000}).toBe(true);
     const exported=await request(page,"POST",`/api/v1/workspaces/${workspace}/exports`,{format:"csv",filters:{search:title,assignee_id:[member.id]}});expect(exported.status).toBe(202);
     await expect.poll(async()=>{const result=await request(page,"GET",`/api/v1/workspaces/${workspace}/exports`);return result.body.data.find((item:{id:string})=>item.id===exported.body.data.id)?.status},{timeout:25_000}).toBe("completed");
     const csv=await page.request.get(exported.body.data.download_url);expect(csv.status()).toBe(200);expect(await csv.text()).toContain(title);
     const authenticated=await tokenContext.request.get(`${projectAPI}/issues/${id}`,{headers:{Authorization:`Bearer ${token.body.data.token}`}});expect(authenticated.status()).toBe(200);expect((await authenticated.json()).data.name).toBe(title);
     expect((await request(page,"DELETE",`/api/v1/workspaces/${workspace}/api-tokens/${token.body.data.id}`)).status).toBe(204);
     expect((await tokenContext.request.get(`${projectAPI}/issues/${id}`,{headers:{Authorization:`Bearer ${token.body.data.token}`}})).status()).toBe(401);
-  }finally{await tokenContext.close();await memberContext.close();await request(page,"DELETE",`${projectAPI}/issues/${id}`);}
+  }finally{await request(page,"DELETE",`/api/v1/workspaces/${workspace}/api-tokens/${token.body.data.id}`);await tokenContext.close();await memberContext.close();await request(page,"DELETE",`${projectAPI}/issues/${id}`);}
 });
 
 test("public board anonymous reading, authenticated feedback and disable switches work in browsers",async({page,browser})=>{

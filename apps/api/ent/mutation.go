@@ -37643,42 +37643,60 @@ func (m *WebhookDeliveryMutation) ResetEdge(name string) error {
 // WorkItemMutation represents an operation that mutates the WorkItem nodes in the graph.
 type WorkItemMutation struct {
 	config
-	op                 Op
-	typ                string
-	id                 *uuid.UUID
-	created_at         *time.Time
-	updated_at         *time.Time
-	deleted_at         *time.Time
-	workspace_id       *uuid.UUID
-	project_id         *uuid.UUID
-	state_id           *uuid.UUID
-	parent_id          *uuid.UUID
-	created_by         *uuid.UUID
-	updated_by         *uuid.UUID
-	name               *string
-	description_html   *string
-	description_json   *map[string]interface{}
-	description_binary *[]byte
-	priority           *string
-	sequence_id        *int64
-	addsequence_id     *int64
-	position           *float64
-	addposition        *float64
-	start_date         *time.Time
-	target_date        *time.Time
-	completed_at       *time.Time
-	archived_at        *time.Time
-	is_draft           *bool
-	estimate           *float64
-	addestimate        *float64
-	type_name          *string
-	version            *int64
-	addversion         *int64
-	estimate_point_id  *uuid.UUID
-	clearedFields      map[string]struct{}
-	done               bool
-	oldValue           func(context.Context) (*WorkItem, error)
-	predicates         []predicate.WorkItem
+	op                        Op
+	typ                       string
+	id                        *uuid.UUID
+	created_at                *time.Time
+	updated_at                *time.Time
+	deleted_at                *time.Time
+	workspace_id              *uuid.UUID
+	project_id                *uuid.UUID
+	state_id                  *uuid.UUID
+	parent_id                 *uuid.UUID
+	created_by                *uuid.UUID
+	updated_by                *uuid.UUID
+	name                      *string
+	description_html          *string
+	description_json          *map[string]interface{}
+	description_binary        *[]byte
+	priority                  *string
+	sequence_id               *int64
+	addsequence_id            *int64
+	position                  *float64
+	addposition               *float64
+	start_date                *time.Time
+	target_date               *time.Time
+	completed_at              *time.Time
+	archived_at               *time.Time
+	is_draft                  *bool
+	estimate                  *float64
+	addestimate               *float64
+	type_name                 *string
+	version                   *int64
+	addversion                *int64
+	estimate_point_id         *uuid.UUID
+	requirement_type          *string
+	story_role                *string
+	story_goal                *string
+	story_benefit             *string
+	acceptance_criteria       *[]string
+	appendacceptance_criteria []string
+	activity_id               *uuid.UUID
+	map_position              *float64
+	addmap_position           *float64
+	estimated_minutes         *int
+	addestimated_minutes      *int
+	remaining_minutes         *int
+	addremaining_minutes      *int
+	required_skills           *[]string
+	appendrequired_skills     []string
+	allocation_weights        *[]map[string]interface{}
+	appendallocation_weights  []map[string]interface{}
+	planning_locked           *bool
+	clearedFields             map[string]struct{}
+	done                      bool
+	oldValue                  func(context.Context) (*WorkItem, error)
+	predicates                []predicate.WorkItem
 }
 
 var _ ent.Mutation = (*WorkItemMutation)(nil)
@@ -38883,6 +38901,597 @@ func (m *WorkItemMutation) ResetEstimatePointID() {
 	delete(m.clearedFields, workitem.FieldEstimatePointID)
 }
 
+// SetRequirementType sets the "requirement_type" field.
+func (m *WorkItemMutation) SetRequirementType(s string) {
+	m.requirement_type = &s
+}
+
+// RequirementType returns the value of the "requirement_type" field in the mutation.
+func (m *WorkItemMutation) RequirementType() (r string, exists bool) {
+	v := m.requirement_type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequirementType returns the old "requirement_type" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldRequirementType(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequirementType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequirementType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequirementType: %w", err)
+	}
+	return oldValue.RequirementType, nil
+}
+
+// ClearRequirementType clears the value of the "requirement_type" field.
+func (m *WorkItemMutation) ClearRequirementType() {
+	m.requirement_type = nil
+	m.clearedFields[workitem.FieldRequirementType] = struct{}{}
+}
+
+// RequirementTypeCleared returns if the "requirement_type" field was cleared in this mutation.
+func (m *WorkItemMutation) RequirementTypeCleared() bool {
+	_, ok := m.clearedFields[workitem.FieldRequirementType]
+	return ok
+}
+
+// ResetRequirementType resets all changes to the "requirement_type" field.
+func (m *WorkItemMutation) ResetRequirementType() {
+	m.requirement_type = nil
+	delete(m.clearedFields, workitem.FieldRequirementType)
+}
+
+// SetStoryRole sets the "story_role" field.
+func (m *WorkItemMutation) SetStoryRole(s string) {
+	m.story_role = &s
+}
+
+// StoryRole returns the value of the "story_role" field in the mutation.
+func (m *WorkItemMutation) StoryRole() (r string, exists bool) {
+	v := m.story_role
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStoryRole returns the old "story_role" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldStoryRole(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStoryRole is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStoryRole requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStoryRole: %w", err)
+	}
+	return oldValue.StoryRole, nil
+}
+
+// ResetStoryRole resets all changes to the "story_role" field.
+func (m *WorkItemMutation) ResetStoryRole() {
+	m.story_role = nil
+}
+
+// SetStoryGoal sets the "story_goal" field.
+func (m *WorkItemMutation) SetStoryGoal(s string) {
+	m.story_goal = &s
+}
+
+// StoryGoal returns the value of the "story_goal" field in the mutation.
+func (m *WorkItemMutation) StoryGoal() (r string, exists bool) {
+	v := m.story_goal
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStoryGoal returns the old "story_goal" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldStoryGoal(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStoryGoal is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStoryGoal requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStoryGoal: %w", err)
+	}
+	return oldValue.StoryGoal, nil
+}
+
+// ResetStoryGoal resets all changes to the "story_goal" field.
+func (m *WorkItemMutation) ResetStoryGoal() {
+	m.story_goal = nil
+}
+
+// SetStoryBenefit sets the "story_benefit" field.
+func (m *WorkItemMutation) SetStoryBenefit(s string) {
+	m.story_benefit = &s
+}
+
+// StoryBenefit returns the value of the "story_benefit" field in the mutation.
+func (m *WorkItemMutation) StoryBenefit() (r string, exists bool) {
+	v := m.story_benefit
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStoryBenefit returns the old "story_benefit" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldStoryBenefit(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStoryBenefit is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStoryBenefit requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStoryBenefit: %w", err)
+	}
+	return oldValue.StoryBenefit, nil
+}
+
+// ResetStoryBenefit resets all changes to the "story_benefit" field.
+func (m *WorkItemMutation) ResetStoryBenefit() {
+	m.story_benefit = nil
+}
+
+// SetAcceptanceCriteria sets the "acceptance_criteria" field.
+func (m *WorkItemMutation) SetAcceptanceCriteria(s []string) {
+	m.acceptance_criteria = &s
+	m.appendacceptance_criteria = nil
+}
+
+// AcceptanceCriteria returns the value of the "acceptance_criteria" field in the mutation.
+func (m *WorkItemMutation) AcceptanceCriteria() (r []string, exists bool) {
+	v := m.acceptance_criteria
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAcceptanceCriteria returns the old "acceptance_criteria" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldAcceptanceCriteria(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAcceptanceCriteria is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAcceptanceCriteria requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAcceptanceCriteria: %w", err)
+	}
+	return oldValue.AcceptanceCriteria, nil
+}
+
+// AppendAcceptanceCriteria adds s to the "acceptance_criteria" field.
+func (m *WorkItemMutation) AppendAcceptanceCriteria(s []string) {
+	m.appendacceptance_criteria = append(m.appendacceptance_criteria, s...)
+}
+
+// AppendedAcceptanceCriteria returns the list of values that were appended to the "acceptance_criteria" field in this mutation.
+func (m *WorkItemMutation) AppendedAcceptanceCriteria() ([]string, bool) {
+	if len(m.appendacceptance_criteria) == 0 {
+		return nil, false
+	}
+	return m.appendacceptance_criteria, true
+}
+
+// ResetAcceptanceCriteria resets all changes to the "acceptance_criteria" field.
+func (m *WorkItemMutation) ResetAcceptanceCriteria() {
+	m.acceptance_criteria = nil
+	m.appendacceptance_criteria = nil
+}
+
+// SetActivityID sets the "activity_id" field.
+func (m *WorkItemMutation) SetActivityID(u uuid.UUID) {
+	m.activity_id = &u
+}
+
+// ActivityID returns the value of the "activity_id" field in the mutation.
+func (m *WorkItemMutation) ActivityID() (r uuid.UUID, exists bool) {
+	v := m.activity_id
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldActivityID returns the old "activity_id" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldActivityID(ctx context.Context) (v *uuid.UUID, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldActivityID is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldActivityID requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldActivityID: %w", err)
+	}
+	return oldValue.ActivityID, nil
+}
+
+// ClearActivityID clears the value of the "activity_id" field.
+func (m *WorkItemMutation) ClearActivityID() {
+	m.activity_id = nil
+	m.clearedFields[workitem.FieldActivityID] = struct{}{}
+}
+
+// ActivityIDCleared returns if the "activity_id" field was cleared in this mutation.
+func (m *WorkItemMutation) ActivityIDCleared() bool {
+	_, ok := m.clearedFields[workitem.FieldActivityID]
+	return ok
+}
+
+// ResetActivityID resets all changes to the "activity_id" field.
+func (m *WorkItemMutation) ResetActivityID() {
+	m.activity_id = nil
+	delete(m.clearedFields, workitem.FieldActivityID)
+}
+
+// SetMapPosition sets the "map_position" field.
+func (m *WorkItemMutation) SetMapPosition(f float64) {
+	m.map_position = &f
+	m.addmap_position = nil
+}
+
+// MapPosition returns the value of the "map_position" field in the mutation.
+func (m *WorkItemMutation) MapPosition() (r float64, exists bool) {
+	v := m.map_position
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldMapPosition returns the old "map_position" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldMapPosition(ctx context.Context) (v float64, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldMapPosition is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldMapPosition requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldMapPosition: %w", err)
+	}
+	return oldValue.MapPosition, nil
+}
+
+// AddMapPosition adds f to the "map_position" field.
+func (m *WorkItemMutation) AddMapPosition(f float64) {
+	if m.addmap_position != nil {
+		*m.addmap_position += f
+	} else {
+		m.addmap_position = &f
+	}
+}
+
+// AddedMapPosition returns the value that was added to the "map_position" field in this mutation.
+func (m *WorkItemMutation) AddedMapPosition() (r float64, exists bool) {
+	v := m.addmap_position
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetMapPosition resets all changes to the "map_position" field.
+func (m *WorkItemMutation) ResetMapPosition() {
+	m.map_position = nil
+	m.addmap_position = nil
+}
+
+// SetEstimatedMinutes sets the "estimated_minutes" field.
+func (m *WorkItemMutation) SetEstimatedMinutes(i int) {
+	m.estimated_minutes = &i
+	m.addestimated_minutes = nil
+}
+
+// EstimatedMinutes returns the value of the "estimated_minutes" field in the mutation.
+func (m *WorkItemMutation) EstimatedMinutes() (r int, exists bool) {
+	v := m.estimated_minutes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldEstimatedMinutes returns the old "estimated_minutes" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldEstimatedMinutes(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldEstimatedMinutes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldEstimatedMinutes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldEstimatedMinutes: %w", err)
+	}
+	return oldValue.EstimatedMinutes, nil
+}
+
+// AddEstimatedMinutes adds i to the "estimated_minutes" field.
+func (m *WorkItemMutation) AddEstimatedMinutes(i int) {
+	if m.addestimated_minutes != nil {
+		*m.addestimated_minutes += i
+	} else {
+		m.addestimated_minutes = &i
+	}
+}
+
+// AddedEstimatedMinutes returns the value that was added to the "estimated_minutes" field in this mutation.
+func (m *WorkItemMutation) AddedEstimatedMinutes() (r int, exists bool) {
+	v := m.addestimated_minutes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearEstimatedMinutes clears the value of the "estimated_minutes" field.
+func (m *WorkItemMutation) ClearEstimatedMinutes() {
+	m.estimated_minutes = nil
+	m.addestimated_minutes = nil
+	m.clearedFields[workitem.FieldEstimatedMinutes] = struct{}{}
+}
+
+// EstimatedMinutesCleared returns if the "estimated_minutes" field was cleared in this mutation.
+func (m *WorkItemMutation) EstimatedMinutesCleared() bool {
+	_, ok := m.clearedFields[workitem.FieldEstimatedMinutes]
+	return ok
+}
+
+// ResetEstimatedMinutes resets all changes to the "estimated_minutes" field.
+func (m *WorkItemMutation) ResetEstimatedMinutes() {
+	m.estimated_minutes = nil
+	m.addestimated_minutes = nil
+	delete(m.clearedFields, workitem.FieldEstimatedMinutes)
+}
+
+// SetRemainingMinutes sets the "remaining_minutes" field.
+func (m *WorkItemMutation) SetRemainingMinutes(i int) {
+	m.remaining_minutes = &i
+	m.addremaining_minutes = nil
+}
+
+// RemainingMinutes returns the value of the "remaining_minutes" field in the mutation.
+func (m *WorkItemMutation) RemainingMinutes() (r int, exists bool) {
+	v := m.remaining_minutes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRemainingMinutes returns the old "remaining_minutes" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldRemainingMinutes(ctx context.Context) (v *int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRemainingMinutes is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRemainingMinutes requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRemainingMinutes: %w", err)
+	}
+	return oldValue.RemainingMinutes, nil
+}
+
+// AddRemainingMinutes adds i to the "remaining_minutes" field.
+func (m *WorkItemMutation) AddRemainingMinutes(i int) {
+	if m.addremaining_minutes != nil {
+		*m.addremaining_minutes += i
+	} else {
+		m.addremaining_minutes = &i
+	}
+}
+
+// AddedRemainingMinutes returns the value that was added to the "remaining_minutes" field in this mutation.
+func (m *WorkItemMutation) AddedRemainingMinutes() (r int, exists bool) {
+	v := m.addremaining_minutes
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ClearRemainingMinutes clears the value of the "remaining_minutes" field.
+func (m *WorkItemMutation) ClearRemainingMinutes() {
+	m.remaining_minutes = nil
+	m.addremaining_minutes = nil
+	m.clearedFields[workitem.FieldRemainingMinutes] = struct{}{}
+}
+
+// RemainingMinutesCleared returns if the "remaining_minutes" field was cleared in this mutation.
+func (m *WorkItemMutation) RemainingMinutesCleared() bool {
+	_, ok := m.clearedFields[workitem.FieldRemainingMinutes]
+	return ok
+}
+
+// ResetRemainingMinutes resets all changes to the "remaining_minutes" field.
+func (m *WorkItemMutation) ResetRemainingMinutes() {
+	m.remaining_minutes = nil
+	m.addremaining_minutes = nil
+	delete(m.clearedFields, workitem.FieldRemainingMinutes)
+}
+
+// SetRequiredSkills sets the "required_skills" field.
+func (m *WorkItemMutation) SetRequiredSkills(s []string) {
+	m.required_skills = &s
+	m.appendrequired_skills = nil
+}
+
+// RequiredSkills returns the value of the "required_skills" field in the mutation.
+func (m *WorkItemMutation) RequiredSkills() (r []string, exists bool) {
+	v := m.required_skills
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldRequiredSkills returns the old "required_skills" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldRequiredSkills(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldRequiredSkills is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldRequiredSkills requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldRequiredSkills: %w", err)
+	}
+	return oldValue.RequiredSkills, nil
+}
+
+// AppendRequiredSkills adds s to the "required_skills" field.
+func (m *WorkItemMutation) AppendRequiredSkills(s []string) {
+	m.appendrequired_skills = append(m.appendrequired_skills, s...)
+}
+
+// AppendedRequiredSkills returns the list of values that were appended to the "required_skills" field in this mutation.
+func (m *WorkItemMutation) AppendedRequiredSkills() ([]string, bool) {
+	if len(m.appendrequired_skills) == 0 {
+		return nil, false
+	}
+	return m.appendrequired_skills, true
+}
+
+// ResetRequiredSkills resets all changes to the "required_skills" field.
+func (m *WorkItemMutation) ResetRequiredSkills() {
+	m.required_skills = nil
+	m.appendrequired_skills = nil
+}
+
+// SetAllocationWeights sets the "allocation_weights" field.
+func (m *WorkItemMutation) SetAllocationWeights(value []map[string]interface{}) {
+	m.allocation_weights = &value
+	m.appendallocation_weights = nil
+}
+
+// AllocationWeights returns the value of the "allocation_weights" field in the mutation.
+func (m *WorkItemMutation) AllocationWeights() (r []map[string]interface{}, exists bool) {
+	v := m.allocation_weights
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAllocationWeights returns the old "allocation_weights" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldAllocationWeights(ctx context.Context) (v []map[string]interface{}, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAllocationWeights is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAllocationWeights requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAllocationWeights: %w", err)
+	}
+	return oldValue.AllocationWeights, nil
+}
+
+// AppendAllocationWeights adds value to the "allocation_weights" field.
+func (m *WorkItemMutation) AppendAllocationWeights(value []map[string]interface{}) {
+	m.appendallocation_weights = append(m.appendallocation_weights, value...)
+}
+
+// AppendedAllocationWeights returns the list of values that were appended to the "allocation_weights" field in this mutation.
+func (m *WorkItemMutation) AppendedAllocationWeights() ([]map[string]interface{}, bool) {
+	if len(m.appendallocation_weights) == 0 {
+		return nil, false
+	}
+	return m.appendallocation_weights, true
+}
+
+// ResetAllocationWeights resets all changes to the "allocation_weights" field.
+func (m *WorkItemMutation) ResetAllocationWeights() {
+	m.allocation_weights = nil
+	m.appendallocation_weights = nil
+}
+
+// SetPlanningLocked sets the "planning_locked" field.
+func (m *WorkItemMutation) SetPlanningLocked(b bool) {
+	m.planning_locked = &b
+}
+
+// PlanningLocked returns the value of the "planning_locked" field in the mutation.
+func (m *WorkItemMutation) PlanningLocked() (r bool, exists bool) {
+	v := m.planning_locked
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPlanningLocked returns the old "planning_locked" field's value of the WorkItem entity.
+// If the WorkItem object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *WorkItemMutation) OldPlanningLocked(ctx context.Context) (v bool, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPlanningLocked is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPlanningLocked requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPlanningLocked: %w", err)
+	}
+	return oldValue.PlanningLocked, nil
+}
+
+// ResetPlanningLocked resets all changes to the "planning_locked" field.
+func (m *WorkItemMutation) ResetPlanningLocked() {
+	m.planning_locked = nil
+}
+
 // Where appends a list predicates to the WorkItemMutation builder.
 func (m *WorkItemMutation) Where(ps ...predicate.WorkItem) {
 	m.predicates = append(m.predicates, ps...)
@@ -38917,7 +39526,7 @@ func (m *WorkItemMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *WorkItemMutation) Fields() []string {
-	fields := make([]string, 0, 25)
+	fields := make([]string, 0, 37)
 	if m.created_at != nil {
 		fields = append(fields, workitem.FieldCreatedAt)
 	}
@@ -38993,6 +39602,42 @@ func (m *WorkItemMutation) Fields() []string {
 	if m.estimate_point_id != nil {
 		fields = append(fields, workitem.FieldEstimatePointID)
 	}
+	if m.requirement_type != nil {
+		fields = append(fields, workitem.FieldRequirementType)
+	}
+	if m.story_role != nil {
+		fields = append(fields, workitem.FieldStoryRole)
+	}
+	if m.story_goal != nil {
+		fields = append(fields, workitem.FieldStoryGoal)
+	}
+	if m.story_benefit != nil {
+		fields = append(fields, workitem.FieldStoryBenefit)
+	}
+	if m.acceptance_criteria != nil {
+		fields = append(fields, workitem.FieldAcceptanceCriteria)
+	}
+	if m.activity_id != nil {
+		fields = append(fields, workitem.FieldActivityID)
+	}
+	if m.map_position != nil {
+		fields = append(fields, workitem.FieldMapPosition)
+	}
+	if m.estimated_minutes != nil {
+		fields = append(fields, workitem.FieldEstimatedMinutes)
+	}
+	if m.remaining_minutes != nil {
+		fields = append(fields, workitem.FieldRemainingMinutes)
+	}
+	if m.required_skills != nil {
+		fields = append(fields, workitem.FieldRequiredSkills)
+	}
+	if m.allocation_weights != nil {
+		fields = append(fields, workitem.FieldAllocationWeights)
+	}
+	if m.planning_locked != nil {
+		fields = append(fields, workitem.FieldPlanningLocked)
+	}
 	return fields
 }
 
@@ -39051,6 +39696,30 @@ func (m *WorkItemMutation) Field(name string) (ent.Value, bool) {
 		return m.Version()
 	case workitem.FieldEstimatePointID:
 		return m.EstimatePointID()
+	case workitem.FieldRequirementType:
+		return m.RequirementType()
+	case workitem.FieldStoryRole:
+		return m.StoryRole()
+	case workitem.FieldStoryGoal:
+		return m.StoryGoal()
+	case workitem.FieldStoryBenefit:
+		return m.StoryBenefit()
+	case workitem.FieldAcceptanceCriteria:
+		return m.AcceptanceCriteria()
+	case workitem.FieldActivityID:
+		return m.ActivityID()
+	case workitem.FieldMapPosition:
+		return m.MapPosition()
+	case workitem.FieldEstimatedMinutes:
+		return m.EstimatedMinutes()
+	case workitem.FieldRemainingMinutes:
+		return m.RemainingMinutes()
+	case workitem.FieldRequiredSkills:
+		return m.RequiredSkills()
+	case workitem.FieldAllocationWeights:
+		return m.AllocationWeights()
+	case workitem.FieldPlanningLocked:
+		return m.PlanningLocked()
 	}
 	return nil, false
 }
@@ -39110,6 +39779,30 @@ func (m *WorkItemMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldVersion(ctx)
 	case workitem.FieldEstimatePointID:
 		return m.OldEstimatePointID(ctx)
+	case workitem.FieldRequirementType:
+		return m.OldRequirementType(ctx)
+	case workitem.FieldStoryRole:
+		return m.OldStoryRole(ctx)
+	case workitem.FieldStoryGoal:
+		return m.OldStoryGoal(ctx)
+	case workitem.FieldStoryBenefit:
+		return m.OldStoryBenefit(ctx)
+	case workitem.FieldAcceptanceCriteria:
+		return m.OldAcceptanceCriteria(ctx)
+	case workitem.FieldActivityID:
+		return m.OldActivityID(ctx)
+	case workitem.FieldMapPosition:
+		return m.OldMapPosition(ctx)
+	case workitem.FieldEstimatedMinutes:
+		return m.OldEstimatedMinutes(ctx)
+	case workitem.FieldRemainingMinutes:
+		return m.OldRemainingMinutes(ctx)
+	case workitem.FieldRequiredSkills:
+		return m.OldRequiredSkills(ctx)
+	case workitem.FieldAllocationWeights:
+		return m.OldAllocationWeights(ctx)
+	case workitem.FieldPlanningLocked:
+		return m.OldPlanningLocked(ctx)
 	}
 	return nil, fmt.Errorf("unknown WorkItem field %s", name)
 }
@@ -39294,6 +39987,90 @@ func (m *WorkItemMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetEstimatePointID(v)
 		return nil
+	case workitem.FieldRequirementType:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequirementType(v)
+		return nil
+	case workitem.FieldStoryRole:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStoryRole(v)
+		return nil
+	case workitem.FieldStoryGoal:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStoryGoal(v)
+		return nil
+	case workitem.FieldStoryBenefit:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStoryBenefit(v)
+		return nil
+	case workitem.FieldAcceptanceCriteria:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAcceptanceCriteria(v)
+		return nil
+	case workitem.FieldActivityID:
+		v, ok := value.(uuid.UUID)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetActivityID(v)
+		return nil
+	case workitem.FieldMapPosition:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetMapPosition(v)
+		return nil
+	case workitem.FieldEstimatedMinutes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetEstimatedMinutes(v)
+		return nil
+	case workitem.FieldRemainingMinutes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRemainingMinutes(v)
+		return nil
+	case workitem.FieldRequiredSkills:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetRequiredSkills(v)
+		return nil
+	case workitem.FieldAllocationWeights:
+		v, ok := value.([]map[string]interface{})
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAllocationWeights(v)
+		return nil
+	case workitem.FieldPlanningLocked:
+		v, ok := value.(bool)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPlanningLocked(v)
+		return nil
 	}
 	return fmt.Errorf("unknown WorkItem field %s", name)
 }
@@ -39314,6 +40091,15 @@ func (m *WorkItemMutation) AddedFields() []string {
 	if m.addversion != nil {
 		fields = append(fields, workitem.FieldVersion)
 	}
+	if m.addmap_position != nil {
+		fields = append(fields, workitem.FieldMapPosition)
+	}
+	if m.addestimated_minutes != nil {
+		fields = append(fields, workitem.FieldEstimatedMinutes)
+	}
+	if m.addremaining_minutes != nil {
+		fields = append(fields, workitem.FieldRemainingMinutes)
+	}
 	return fields
 }
 
@@ -39330,6 +40116,12 @@ func (m *WorkItemMutation) AddedField(name string) (ent.Value, bool) {
 		return m.AddedEstimate()
 	case workitem.FieldVersion:
 		return m.AddedVersion()
+	case workitem.FieldMapPosition:
+		return m.AddedMapPosition()
+	case workitem.FieldEstimatedMinutes:
+		return m.AddedEstimatedMinutes()
+	case workitem.FieldRemainingMinutes:
+		return m.AddedRemainingMinutes()
 	}
 	return nil, false
 }
@@ -39367,6 +40159,27 @@ func (m *WorkItemMutation) AddField(name string, value ent.Value) error {
 		}
 		m.AddVersion(v)
 		return nil
+	case workitem.FieldMapPosition:
+		v, ok := value.(float64)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddMapPosition(v)
+		return nil
+	case workitem.FieldEstimatedMinutes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddEstimatedMinutes(v)
+		return nil
+	case workitem.FieldRemainingMinutes:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddRemainingMinutes(v)
+		return nil
 	}
 	return fmt.Errorf("unknown WorkItem numeric field %s", name)
 }
@@ -39401,6 +40214,18 @@ func (m *WorkItemMutation) ClearedFields() []string {
 	}
 	if m.FieldCleared(workitem.FieldEstimatePointID) {
 		fields = append(fields, workitem.FieldEstimatePointID)
+	}
+	if m.FieldCleared(workitem.FieldRequirementType) {
+		fields = append(fields, workitem.FieldRequirementType)
+	}
+	if m.FieldCleared(workitem.FieldActivityID) {
+		fields = append(fields, workitem.FieldActivityID)
+	}
+	if m.FieldCleared(workitem.FieldEstimatedMinutes) {
+		fields = append(fields, workitem.FieldEstimatedMinutes)
+	}
+	if m.FieldCleared(workitem.FieldRemainingMinutes) {
+		fields = append(fields, workitem.FieldRemainingMinutes)
 	}
 	return fields
 }
@@ -39442,6 +40267,18 @@ func (m *WorkItemMutation) ClearField(name string) error {
 		return nil
 	case workitem.FieldEstimatePointID:
 		m.ClearEstimatePointID()
+		return nil
+	case workitem.FieldRequirementType:
+		m.ClearRequirementType()
+		return nil
+	case workitem.FieldActivityID:
+		m.ClearActivityID()
+		return nil
+	case workitem.FieldEstimatedMinutes:
+		m.ClearEstimatedMinutes()
+		return nil
+	case workitem.FieldRemainingMinutes:
+		m.ClearRemainingMinutes()
 		return nil
 	}
 	return fmt.Errorf("unknown WorkItem nullable field %s", name)
@@ -39525,6 +40362,42 @@ func (m *WorkItemMutation) ResetField(name string) error {
 		return nil
 	case workitem.FieldEstimatePointID:
 		m.ResetEstimatePointID()
+		return nil
+	case workitem.FieldRequirementType:
+		m.ResetRequirementType()
+		return nil
+	case workitem.FieldStoryRole:
+		m.ResetStoryRole()
+		return nil
+	case workitem.FieldStoryGoal:
+		m.ResetStoryGoal()
+		return nil
+	case workitem.FieldStoryBenefit:
+		m.ResetStoryBenefit()
+		return nil
+	case workitem.FieldAcceptanceCriteria:
+		m.ResetAcceptanceCriteria()
+		return nil
+	case workitem.FieldActivityID:
+		m.ResetActivityID()
+		return nil
+	case workitem.FieldMapPosition:
+		m.ResetMapPosition()
+		return nil
+	case workitem.FieldEstimatedMinutes:
+		m.ResetEstimatedMinutes()
+		return nil
+	case workitem.FieldRemainingMinutes:
+		m.ResetRemainingMinutes()
+		return nil
+	case workitem.FieldRequiredSkills:
+		m.ResetRequiredSkills()
+		return nil
+	case workitem.FieldAllocationWeights:
+		m.ResetAllocationWeights()
+		return nil
+	case workitem.FieldPlanningLocked:
+		m.ResetPlanningLocked()
 		return nil
 	}
 	return fmt.Errorf("unknown WorkItem field %s", name)

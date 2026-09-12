@@ -1,5 +1,9 @@
 # my-jira
 
+当前迭代增加需求故事地图、资源排期与 UML 联动，以及受项目策略约束的 AI
+工作流。范围与进度见[需求基线](docs/REQUIREMENTS_BASELINE.md)、
+[三阶段计划](docs/ITERATION_PLAN.md)和[独立验证记录](docs/REQUIREMENTS_VALIDATION.md)。
+
 从零开发的团队项目管理应用。前端采用 React / TypeScript，业务 API 采用 Go，
 具备工作区和项目、工作项五种布局、周期、模块、保存视图、多人协作文档、通知、
 分析、公开站、开放 API、Webhook、文件和导出能力。

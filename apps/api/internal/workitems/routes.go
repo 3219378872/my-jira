@@ -112,6 +112,7 @@ const issueSelect = `SELECT (to_jsonb(w)-'description_binary'-'deleted_at') || j
  'label_ids',COALESCE((SELECT jsonb_agg(l.label_id ORDER BY l.label_id) FROM work_item_labels l WHERE l.work_item_id=w.id AND l.deleted_at IS NULL),'[]'::jsonb),
  'label_details',COALESCE((SELECT jsonb_agg(jsonb_build_object('id',l.id,'name',l.name,'color',l.color)) FROM work_item_labels a JOIN labels l ON l.id=a.label_id WHERE a.work_item_id=w.id AND a.deleted_at IS NULL AND l.deleted_at IS NULL),'[]'::jsonb),
  'cycle_id',(SELECT a.cycle_id FROM cycle_items a JOIN cycles cy ON cy.id=a.cycle_id WHERE a.work_item_id=w.id AND a.deleted_at IS NULL AND cy.deleted_at IS NULL LIMIT 1),
+ 'dependency_ids',COALESCE((SELECT jsonb_agg(d.id ORDER BY d.id) FROM work_item_relations r JOIN work_items d ON d.id=r.source_id AND d.workspace_id=w.workspace_id AND d.project_id=w.project_id WHERE r.target_id=w.id AND r.relation_type='blocks' AND r.deleted_at IS NULL AND d.deleted_at IS NULL),'[]'::jsonb),
  'module_ids',COALESCE((SELECT jsonb_agg(a.module_id) FROM module_items a JOIN modules m ON m.id=a.module_id WHERE a.work_item_id=w.id AND a.deleted_at IS NULL AND m.deleted_at IS NULL),'[]'::jsonb),
  'state_detail',(SELECT (to_jsonb(s)-'deleted_at') || jsonb_build_object('group',s.group_name) FROM states s WHERE s.id=w.state_id),
  'project_detail',(SELECT jsonb_build_object('id',p.id,'name',p.name,'identifier',p.identifier,'icon',p.icon,'color',p.color) FROM projects p WHERE p.id=w.project_id),
@@ -123,7 +124,9 @@ const issueSelect = `SELECT (to_jsonb(w)-'description_binary'-'deleted_at') || j
 
 func issueSelectFor(actorParameter string) string {
 	access := ` AND (ch.created_by=` + actorParameter + ` OR EXISTS(SELECT 1 FROM projects gp WHERE gp.id=ch.project_id AND gp.guest_can_view_all) OR EXISTS(SELECT 1 FROM workspace_members wm LEFT JOIN project_members pm ON pm.workspace_id=wm.workspace_id AND pm.project_id=ch.project_id AND pm.user_id=wm.user_id AND pm.is_active AND pm.deleted_at IS NULL WHERE wm.workspace_id=ch.workspace_id AND wm.user_id=` + actorParameter + ` AND wm.is_active AND wm.deleted_at IS NULL AND CASE WHEN wm.role IN(5,20) THEN wm.role ELSE COALESCE(pm.role,wm.role) END>=15))`
-	return strings.Replace(issueSelect, "ch.deleted_at IS NULL)", "ch.deleted_at IS NULL"+access+")", 1)
+	query := strings.Replace(issueSelect, "ch.deleted_at IS NULL)", "ch.deleted_at IS NULL"+access+")", 1)
+	dependencyAccess := strings.ReplaceAll(access, "ch.", "d.")
+	return strings.Replace(query, "d.deleted_at IS NULL)", "d.deleted_at IS NULL"+dependencyAccess+")", 1)
 }
 
 func bindInput[T any](c *gin.Context, target *T) error {

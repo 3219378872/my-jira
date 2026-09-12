@@ -8,7 +8,6 @@ import (
 	"io"
 	"net"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -163,14 +162,7 @@ func TestMentionPreferencesAndPublicReactions(t *testing.T) {
 }
 
 func TestExportFilterAndRevocation(t *testing.T) {
-	endpoint := os.Getenv("TEST_S3_ENDPOINT")
-	if endpoint == "" {
-		t.Skip("TEST_S3_ENDPOINT is required for isolated object-store integration")
-	}
-	t.Setenv("S3_ENDPOINT", endpoint)
-	t.Setenv("S3_BUCKET", "test-"+uuid.NewString())
-	t.Setenv("S3_ACCESS_KEY", "myjira_local")
-	t.Setenv("S3_SECRET_KEY", "myjira_local_storage")
+	testutil.ObjectStoreEnvironment(t)
 	f := testutil.New(t)
 	router := f.Router(Register)
 	f.Issue(t, f.ProjectID, f.StateID, f.OwnerID, "Include this", 1)

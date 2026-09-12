@@ -886,6 +886,18 @@ var (
 		{Name: "type_name", Type: field.TypeString, Default: ""},
 		{Name: "version", Type: field.TypeInt64, Default: 1},
 		{Name: "estimate_point_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "requirement_type", Type: field.TypeString, Nullable: true},
+		{Name: "story_role", Type: field.TypeString, Default: ""},
+		{Name: "story_goal", Type: field.TypeString, Default: ""},
+		{Name: "story_benefit", Type: field.TypeString, Default: ""},
+		{Name: "acceptance_criteria", Type: field.TypeJSON},
+		{Name: "activity_id", Type: field.TypeUUID, Nullable: true},
+		{Name: "map_position", Type: field.TypeFloat64, Default: 1024},
+		{Name: "estimated_minutes", Type: field.TypeInt, Nullable: true},
+		{Name: "remaining_minutes", Type: field.TypeInt, Nullable: true},
+		{Name: "required_skills", Type: field.TypeJSON},
+		{Name: "allocation_weights", Type: field.TypeJSON},
+		{Name: "planning_locked", Type: field.TypeBool, Default: false},
 	}
 	// WorkItemsTable holds the schema information for the "work_items" table.
 	WorkItemsTable = &schema.Table{

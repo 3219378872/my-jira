@@ -12,6 +12,7 @@ import (
 type Actor struct {
 	UserID           uuid.UUID
 	SessionID        uuid.UUID
+	TokenID          uuid.UUID
 	IsAdmin          bool
 	TokenWorkspaceID uuid.UUID
 }

@@ -299,6 +299,150 @@ func (_c *WorkItemCreate) SetNillableEstimatePointID(v *uuid.UUID) *WorkItemCrea
 	return _c
 }
 
+// SetRequirementType sets the "requirement_type" field.
+func (_c *WorkItemCreate) SetRequirementType(v string) *WorkItemCreate {
+	_c.mutation.SetRequirementType(v)
+	return _c
+}
+
+// SetNillableRequirementType sets the "requirement_type" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableRequirementType(v *string) *WorkItemCreate {
+	if v != nil {
+		_c.SetRequirementType(*v)
+	}
+	return _c
+}
+
+// SetStoryRole sets the "story_role" field.
+func (_c *WorkItemCreate) SetStoryRole(v string) *WorkItemCreate {
+	_c.mutation.SetStoryRole(v)
+	return _c
+}
+
+// SetNillableStoryRole sets the "story_role" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableStoryRole(v *string) *WorkItemCreate {
+	if v != nil {
+		_c.SetStoryRole(*v)
+	}
+	return _c
+}
+
+// SetStoryGoal sets the "story_goal" field.
+func (_c *WorkItemCreate) SetStoryGoal(v string) *WorkItemCreate {
+	_c.mutation.SetStoryGoal(v)
+	return _c
+}
+
+// SetNillableStoryGoal sets the "story_goal" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableStoryGoal(v *string) *WorkItemCreate {
+	if v != nil {
+		_c.SetStoryGoal(*v)
+	}
+	return _c
+}
+
+// SetStoryBenefit sets the "story_benefit" field.
+func (_c *WorkItemCreate) SetStoryBenefit(v string) *WorkItemCreate {
+	_c.mutation.SetStoryBenefit(v)
+	return _c
+}
+
+// SetNillableStoryBenefit sets the "story_benefit" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableStoryBenefit(v *string) *WorkItemCreate {
+	if v != nil {
+		_c.SetStoryBenefit(*v)
+	}
+	return _c
+}
+
+// SetAcceptanceCriteria sets the "acceptance_criteria" field.
+func (_c *WorkItemCreate) SetAcceptanceCriteria(v []string) *WorkItemCreate {
+	_c.mutation.SetAcceptanceCriteria(v)
+	return _c
+}
+
+// SetActivityID sets the "activity_id" field.
+func (_c *WorkItemCreate) SetActivityID(v uuid.UUID) *WorkItemCreate {
+	_c.mutation.SetActivityID(v)
+	return _c
+}
+
+// SetNillableActivityID sets the "activity_id" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableActivityID(v *uuid.UUID) *WorkItemCreate {
+	if v != nil {
+		_c.SetActivityID(*v)
+	}
+	return _c
+}
+
+// SetMapPosition sets the "map_position" field.
+func (_c *WorkItemCreate) SetMapPosition(v float64) *WorkItemCreate {
+	_c.mutation.SetMapPosition(v)
+	return _c
+}
+
+// SetNillableMapPosition sets the "map_position" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableMapPosition(v *float64) *WorkItemCreate {
+	if v != nil {
+		_c.SetMapPosition(*v)
+	}
+	return _c
+}
+
+// SetEstimatedMinutes sets the "estimated_minutes" field.
+func (_c *WorkItemCreate) SetEstimatedMinutes(v int) *WorkItemCreate {
+	_c.mutation.SetEstimatedMinutes(v)
+	return _c
+}
+
+// SetNillableEstimatedMinutes sets the "estimated_minutes" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableEstimatedMinutes(v *int) *WorkItemCreate {
+	if v != nil {
+		_c.SetEstimatedMinutes(*v)
+	}
+	return _c
+}
+
+// SetRemainingMinutes sets the "remaining_minutes" field.
+func (_c *WorkItemCreate) SetRemainingMinutes(v int) *WorkItemCreate {
+	_c.mutation.SetRemainingMinutes(v)
+	return _c
+}
+
+// SetNillableRemainingMinutes sets the "remaining_minutes" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillableRemainingMinutes(v *int) *WorkItemCreate {
+	if v != nil {
+		_c.SetRemainingMinutes(*v)
+	}
+	return _c
+}
+
+// SetRequiredSkills sets the "required_skills" field.
+func (_c *WorkItemCreate) SetRequiredSkills(v []string) *WorkItemCreate {
+	_c.mutation.SetRequiredSkills(v)
+	return _c
+}
+
+// SetAllocationWeights sets the "allocation_weights" field.
+func (_c *WorkItemCreate) SetAllocationWeights(v []map[string]interface{}) *WorkItemCreate {
+	_c.mutation.SetAllocationWeights(v)
+	return _c
+}
+
+// SetPlanningLocked sets the "planning_locked" field.
+func (_c *WorkItemCreate) SetPlanningLocked(v bool) *WorkItemCreate {
+	_c.mutation.SetPlanningLocked(v)
+	return _c
+}
+
+// SetNillablePlanningLocked sets the "planning_locked" field if the given value is not nil.
+func (_c *WorkItemCreate) SetNillablePlanningLocked(v *bool) *WorkItemCreate {
+	if v != nil {
+		_c.SetPlanningLocked(*v)
+	}
+	return _c
+}
+
 // SetID sets the "id" field.
 func (_c *WorkItemCreate) SetID(v uuid.UUID) *WorkItemCreate {
 	_c.mutation.SetID(v)
@@ -384,6 +528,38 @@ func (_c *WorkItemCreate) defaults() {
 		v := workitem.DefaultVersion
 		_c.mutation.SetVersion(v)
 	}
+	if _, ok := _c.mutation.StoryRole(); !ok {
+		v := workitem.DefaultStoryRole
+		_c.mutation.SetStoryRole(v)
+	}
+	if _, ok := _c.mutation.StoryGoal(); !ok {
+		v := workitem.DefaultStoryGoal
+		_c.mutation.SetStoryGoal(v)
+	}
+	if _, ok := _c.mutation.StoryBenefit(); !ok {
+		v := workitem.DefaultStoryBenefit
+		_c.mutation.SetStoryBenefit(v)
+	}
+	if _, ok := _c.mutation.AcceptanceCriteria(); !ok {
+		v := workitem.DefaultAcceptanceCriteria
+		_c.mutation.SetAcceptanceCriteria(v)
+	}
+	if _, ok := _c.mutation.MapPosition(); !ok {
+		v := workitem.DefaultMapPosition
+		_c.mutation.SetMapPosition(v)
+	}
+	if _, ok := _c.mutation.RequiredSkills(); !ok {
+		v := workitem.DefaultRequiredSkills
+		_c.mutation.SetRequiredSkills(v)
+	}
+	if _, ok := _c.mutation.AllocationWeights(); !ok {
+		v := workitem.DefaultAllocationWeights
+		_c.mutation.SetAllocationWeights(v)
+	}
+	if _, ok := _c.mutation.PlanningLocked(); !ok {
+		v := workitem.DefaultPlanningLocked
+		_c.mutation.SetPlanningLocked(v)
+	}
 	if _, ok := _c.mutation.ID(); !ok {
 		v := workitem.DefaultID()
 		_c.mutation.SetID(v)
@@ -439,6 +615,30 @@ func (_c *WorkItemCreate) check() error {
 	}
 	if _, ok := _c.mutation.Version(); !ok {
 		return &ValidationError{Name: "version", err: errors.New(`ent: missing required field "WorkItem.version"`)}
+	}
+	if _, ok := _c.mutation.StoryRole(); !ok {
+		return &ValidationError{Name: "story_role", err: errors.New(`ent: missing required field "WorkItem.story_role"`)}
+	}
+	if _, ok := _c.mutation.StoryGoal(); !ok {
+		return &ValidationError{Name: "story_goal", err: errors.New(`ent: missing required field "WorkItem.story_goal"`)}
+	}
+	if _, ok := _c.mutation.StoryBenefit(); !ok {
+		return &ValidationError{Name: "story_benefit", err: errors.New(`ent: missing required field "WorkItem.story_benefit"`)}
+	}
+	if _, ok := _c.mutation.AcceptanceCriteria(); !ok {
+		return &ValidationError{Name: "acceptance_criteria", err: errors.New(`ent: missing required field "WorkItem.acceptance_criteria"`)}
+	}
+	if _, ok := _c.mutation.MapPosition(); !ok {
+		return &ValidationError{Name: "map_position", err: errors.New(`ent: missing required field "WorkItem.map_position"`)}
+	}
+	if _, ok := _c.mutation.RequiredSkills(); !ok {
+		return &ValidationError{Name: "required_skills", err: errors.New(`ent: missing required field "WorkItem.required_skills"`)}
+	}
+	if _, ok := _c.mutation.AllocationWeights(); !ok {
+		return &ValidationError{Name: "allocation_weights", err: errors.New(`ent: missing required field "WorkItem.allocation_weights"`)}
+	}
+	if _, ok := _c.mutation.PlanningLocked(); !ok {
+		return &ValidationError{Name: "planning_locked", err: errors.New(`ent: missing required field "WorkItem.planning_locked"`)}
 	}
 	return nil
 }
@@ -574,6 +774,54 @@ func (_c *WorkItemCreate) createSpec() (*WorkItem, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.EstimatePointID(); ok {
 		_spec.SetField(workitem.FieldEstimatePointID, field.TypeUUID, value)
 		_node.EstimatePointID = &value
+	}
+	if value, ok := _c.mutation.RequirementType(); ok {
+		_spec.SetField(workitem.FieldRequirementType, field.TypeString, value)
+		_node.RequirementType = &value
+	}
+	if value, ok := _c.mutation.StoryRole(); ok {
+		_spec.SetField(workitem.FieldStoryRole, field.TypeString, value)
+		_node.StoryRole = value
+	}
+	if value, ok := _c.mutation.StoryGoal(); ok {
+		_spec.SetField(workitem.FieldStoryGoal, field.TypeString, value)
+		_node.StoryGoal = value
+	}
+	if value, ok := _c.mutation.StoryBenefit(); ok {
+		_spec.SetField(workitem.FieldStoryBenefit, field.TypeString, value)
+		_node.StoryBenefit = value
+	}
+	if value, ok := _c.mutation.AcceptanceCriteria(); ok {
+		_spec.SetField(workitem.FieldAcceptanceCriteria, field.TypeJSON, value)
+		_node.AcceptanceCriteria = value
+	}
+	if value, ok := _c.mutation.ActivityID(); ok {
+		_spec.SetField(workitem.FieldActivityID, field.TypeUUID, value)
+		_node.ActivityID = &value
+	}
+	if value, ok := _c.mutation.MapPosition(); ok {
+		_spec.SetField(workitem.FieldMapPosition, field.TypeFloat64, value)
+		_node.MapPosition = value
+	}
+	if value, ok := _c.mutation.EstimatedMinutes(); ok {
+		_spec.SetField(workitem.FieldEstimatedMinutes, field.TypeInt, value)
+		_node.EstimatedMinutes = &value
+	}
+	if value, ok := _c.mutation.RemainingMinutes(); ok {
+		_spec.SetField(workitem.FieldRemainingMinutes, field.TypeInt, value)
+		_node.RemainingMinutes = &value
+	}
+	if value, ok := _c.mutation.RequiredSkills(); ok {
+		_spec.SetField(workitem.FieldRequiredSkills, field.TypeJSON, value)
+		_node.RequiredSkills = value
+	}
+	if value, ok := _c.mutation.AllocationWeights(); ok {
+		_spec.SetField(workitem.FieldAllocationWeights, field.TypeJSON, value)
+		_node.AllocationWeights = value
+	}
+	if value, ok := _c.mutation.PlanningLocked(); ok {
+		_spec.SetField(workitem.FieldPlanningLocked, field.TypeBool, value)
+		_node.PlanningLocked = value
 	}
 	return _node, _spec
 }

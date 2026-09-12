@@ -12,6 +12,7 @@ import (
 	"my-jira/apps/api/internal/platform/httpapi"
 	"my-jira/apps/api/internal/platform/identity"
 	"my-jira/apps/api/internal/platform/jobs"
+	"my-jira/apps/api/internal/workitems"
 )
 
 func (s *Server) projects(c *gin.Context) {
@@ -218,9 +219,14 @@ func (s *Server) updateProject(c *gin.Context) {
 		if err := q.QueryRowContext(c.Request.Context(), `SELECT settings FROM projects WHERE id=$1 AND workspace_id=$2 AND deleted_at IS NULL FOR UPDATE`, scope.ProjectID, scope.WorkspaceID).Scan(&raw); err != nil {
 			return err
 		}
-		if _, err := (&identity.SQLPolicy{DB: q}).Project(c.Request.Context(), scope.Actor, scope.WorkspaceID, scope.ProjectID, identity.Admin); err != nil {
-			return err
+		current, authErr := workitems.CurrentScope(c.Request.Context(), q, scope.Actor, scope.WorkspaceID, scope.ProjectID, identity.Guest)
+		if authErr != nil {
+			return authErr
 		}
+		if current.Role < identity.Admin {
+			return apperror.Forbidden()
+		}
+		scope = current
 		if len(settingsChanges) > 0 {
 			settings := map[string]any{}
 			if err := json.Unmarshal(raw, &settings); err != nil {

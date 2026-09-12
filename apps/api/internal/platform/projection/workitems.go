@@ -20,7 +20,9 @@ const maxResponseBytes = 16 << 20
 var issueFields = strings.Fields(`id workspace_id project_id state_id parent_id created_by updated_by
 	name description_html description_json priority sequence_id position start_date target_date
 	completed_at archived_at is_draft estimate estimate_point_id type_name version created_at updated_at
-	assignee_ids label_ids cycle_id module_ids sub_item_count comment_count attachment_count`)
+	assignee_ids label_ids cycle_id module_ids sub_item_count comment_count attachment_count
+	requirement_type story_role story_goal story_benefit acceptance_criteria activity_id map_position
+	estimated_minutes remaining_minutes required_skills allocation_weights planning_locked dependency_ids`)
 
 type expansion struct {
 	property string

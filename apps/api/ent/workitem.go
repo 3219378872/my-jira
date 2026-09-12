@@ -69,7 +69,31 @@ type WorkItem struct {
 	Version int64 `json:"version,omitempty"`
 	// EstimatePointID holds the value of the "estimate_point_id" field.
 	EstimatePointID *uuid.UUID `json:"estimate_point_id,omitempty"`
-	selectValues    sql.SelectValues
+	// RequirementType holds the value of the "requirement_type" field.
+	RequirementType *string `json:"requirement_type,omitempty"`
+	// StoryRole holds the value of the "story_role" field.
+	StoryRole string `json:"story_role,omitempty"`
+	// StoryGoal holds the value of the "story_goal" field.
+	StoryGoal string `json:"story_goal,omitempty"`
+	// StoryBenefit holds the value of the "story_benefit" field.
+	StoryBenefit string `json:"story_benefit,omitempty"`
+	// AcceptanceCriteria holds the value of the "acceptance_criteria" field.
+	AcceptanceCriteria []string `json:"acceptance_criteria,omitempty"`
+	// ActivityID holds the value of the "activity_id" field.
+	ActivityID *uuid.UUID `json:"activity_id,omitempty"`
+	// MapPosition holds the value of the "map_position" field.
+	MapPosition float64 `json:"map_position,omitempty"`
+	// EstimatedMinutes holds the value of the "estimated_minutes" field.
+	EstimatedMinutes *int `json:"estimated_minutes,omitempty"`
+	// RemainingMinutes holds the value of the "remaining_minutes" field.
+	RemainingMinutes *int `json:"remaining_minutes,omitempty"`
+	// RequiredSkills holds the value of the "required_skills" field.
+	RequiredSkills []string `json:"required_skills,omitempty"`
+	// AllocationWeights holds the value of the "allocation_weights" field.
+	AllocationWeights []map[string]interface{} `json:"allocation_weights,omitempty"`
+	// PlanningLocked holds the value of the "planning_locked" field.
+	PlanningLocked bool `json:"planning_locked,omitempty"`
+	selectValues   sql.SelectValues
 }
 
 // scanValues returns the types for scanning values from sql.Rows.
@@ -77,17 +101,17 @@ func (*WorkItem) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case workitem.FieldParentID, workitem.FieldEstimatePointID:
+		case workitem.FieldParentID, workitem.FieldEstimatePointID, workitem.FieldActivityID:
 			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
-		case workitem.FieldDescriptionJSON, workitem.FieldDescriptionBinary:
+		case workitem.FieldDescriptionJSON, workitem.FieldDescriptionBinary, workitem.FieldAcceptanceCriteria, workitem.FieldRequiredSkills, workitem.FieldAllocationWeights:
 			values[i] = new([]byte)
-		case workitem.FieldIsDraft:
+		case workitem.FieldIsDraft, workitem.FieldPlanningLocked:
 			values[i] = new(sql.NullBool)
-		case workitem.FieldPosition, workitem.FieldEstimate:
+		case workitem.FieldPosition, workitem.FieldEstimate, workitem.FieldMapPosition:
 			values[i] = new(sql.NullFloat64)
-		case workitem.FieldSequenceID, workitem.FieldVersion:
+		case workitem.FieldSequenceID, workitem.FieldVersion, workitem.FieldEstimatedMinutes, workitem.FieldRemainingMinutes:
 			values[i] = new(sql.NullInt64)
-		case workitem.FieldName, workitem.FieldDescriptionHTML, workitem.FieldPriority, workitem.FieldTypeName:
+		case workitem.FieldName, workitem.FieldDescriptionHTML, workitem.FieldPriority, workitem.FieldTypeName, workitem.FieldRequirementType, workitem.FieldStoryRole, workitem.FieldStoryGoal, workitem.FieldStoryBenefit:
 			values[i] = new(sql.NullString)
 		case workitem.FieldCreatedAt, workitem.FieldUpdatedAt, workitem.FieldDeletedAt, workitem.FieldStartDate, workitem.FieldTargetDate, workitem.FieldCompletedAt, workitem.FieldArchivedAt:
 			values[i] = new(sql.NullTime)
@@ -274,6 +298,88 @@ func (_m *WorkItem) assignValues(columns []string, values []any) error {
 				_m.EstimatePointID = new(uuid.UUID)
 				*_m.EstimatePointID = *value.S.(*uuid.UUID)
 			}
+		case workitem.FieldRequirementType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field requirement_type", values[i])
+			} else if value.Valid {
+				_m.RequirementType = new(string)
+				*_m.RequirementType = value.String
+			}
+		case workitem.FieldStoryRole:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field story_role", values[i])
+			} else if value.Valid {
+				_m.StoryRole = value.String
+			}
+		case workitem.FieldStoryGoal:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field story_goal", values[i])
+			} else if value.Valid {
+				_m.StoryGoal = value.String
+			}
+		case workitem.FieldStoryBenefit:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field story_benefit", values[i])
+			} else if value.Valid {
+				_m.StoryBenefit = value.String
+			}
+		case workitem.FieldAcceptanceCriteria:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field acceptance_criteria", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.AcceptanceCriteria); err != nil {
+					return fmt.Errorf("unmarshal field acceptance_criteria: %w", err)
+				}
+			}
+		case workitem.FieldActivityID:
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field activity_id", values[i])
+			} else if value.Valid {
+				_m.ActivityID = new(uuid.UUID)
+				*_m.ActivityID = *value.S.(*uuid.UUID)
+			}
+		case workitem.FieldMapPosition:
+			if value, ok := values[i].(*sql.NullFloat64); !ok {
+				return fmt.Errorf("unexpected type %T for field map_position", values[i])
+			} else if value.Valid {
+				_m.MapPosition = value.Float64
+			}
+		case workitem.FieldEstimatedMinutes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field estimated_minutes", values[i])
+			} else if value.Valid {
+				_m.EstimatedMinutes = new(int)
+				*_m.EstimatedMinutes = int(value.Int64)
+			}
+		case workitem.FieldRemainingMinutes:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field remaining_minutes", values[i])
+			} else if value.Valid {
+				_m.RemainingMinutes = new(int)
+				*_m.RemainingMinutes = int(value.Int64)
+			}
+		case workitem.FieldRequiredSkills:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field required_skills", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.RequiredSkills); err != nil {
+					return fmt.Errorf("unmarshal field required_skills: %w", err)
+				}
+			}
+		case workitem.FieldAllocationWeights:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field allocation_weights", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.AllocationWeights); err != nil {
+					return fmt.Errorf("unmarshal field allocation_weights: %w", err)
+				}
+			}
+		case workitem.FieldPlanningLocked:
+			if value, ok := values[i].(*sql.NullBool); !ok {
+				return fmt.Errorf("unexpected type %T for field planning_locked", values[i])
+			} else if value.Valid {
+				_m.PlanningLocked = value.Bool
+			}
 		default:
 			_m.selectValues.Set(columns[i], values[i])
 		}
@@ -400,6 +506,50 @@ func (_m *WorkItem) String() string {
 		builder.WriteString("estimate_point_id=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	if v := _m.RequirementType; v != nil {
+		builder.WriteString("requirement_type=")
+		builder.WriteString(*v)
+	}
+	builder.WriteString(", ")
+	builder.WriteString("story_role=")
+	builder.WriteString(_m.StoryRole)
+	builder.WriteString(", ")
+	builder.WriteString("story_goal=")
+	builder.WriteString(_m.StoryGoal)
+	builder.WriteString(", ")
+	builder.WriteString("story_benefit=")
+	builder.WriteString(_m.StoryBenefit)
+	builder.WriteString(", ")
+	builder.WriteString("acceptance_criteria=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AcceptanceCriteria))
+	builder.WriteString(", ")
+	if v := _m.ActivityID; v != nil {
+		builder.WriteString("activity_id=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("map_position=")
+	builder.WriteString(fmt.Sprintf("%v", _m.MapPosition))
+	builder.WriteString(", ")
+	if v := _m.EstimatedMinutes; v != nil {
+		builder.WriteString("estimated_minutes=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	if v := _m.RemainingMinutes; v != nil {
+		builder.WriteString("remaining_minutes=")
+		builder.WriteString(fmt.Sprintf("%v", *v))
+	}
+	builder.WriteString(", ")
+	builder.WriteString("required_skills=")
+	builder.WriteString(fmt.Sprintf("%v", _m.RequiredSkills))
+	builder.WriteString(", ")
+	builder.WriteString("allocation_weights=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AllocationWeights))
+	builder.WriteString(", ")
+	builder.WriteString("planning_locked=")
+	builder.WriteString(fmt.Sprintf("%v", _m.PlanningLocked))
 	builder.WriteByte(')')
 	return builder.String()
 }

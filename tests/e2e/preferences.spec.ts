@@ -145,9 +145,10 @@ test("personal home layout and consecutive favorite assignments persist without 
       .selectOption(groupID);
     await expect
       .poll(async () => {
-        const mapping = (
-          await request(page, "GET", `${base}/preferences/sidebar`)
-        ).body.data.value.favorite_groups;
+        const mapping =
+          (
+            await request(page, "GET", `${base}/preferences/sidebar`)
+          ).body.data.value.favorite_groups ?? {};
         return favorites.every((id) => mapping[id] === groupID);
       })
       .toBe(true);

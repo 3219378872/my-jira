@@ -17,6 +17,7 @@ services:
       DATABASE_URL: postgres://myjira:${POSTGRES_PASSWORD:-myjira_local_dev}@postgres:5432/myjira?sslmode=disable
       REDIS_ADDR: redis:6379
       APP_ORIGIN: ${DEPLOY_ORIGIN:-http://127.0.0.1:4180}
+      APP_URL: ${DEPLOY_ORIGIN:-http://127.0.0.1:4180}
       ALLOWED_ORIGINS: ${DEPLOY_ORIGIN:-http://127.0.0.1:4180}
       API_PUBLIC_URL: ${DEPLOY_ORIGIN:-http://127.0.0.1:4180}
       APP_ENCRYPTION_KEY: ${APP_ENCRYPTION_KEY:?Set APP_ENCRYPTION_KEY in .env}
@@ -32,6 +33,12 @@ services:
       AI_BASE_URL: ${AI_BASE_URL:-https://api.weblearning.fun/v1}
       AI_MODEL: gpt-5.6-terra
       MINE_API_KEY: ${MINE_API_KEY:-}
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_SLUG: ${GITHUB_APP_SLUG:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      GITHUB_APP_CLIENT_ID: ${GITHUB_APP_CLIENT_ID:-}
+      GITHUB_APP_CLIENT_SECRET: ${GITHUB_APP_CLIENT_SECRET:-}
+      GITHUB_WEBHOOK_SECRET: ${GITHUB_WEBHOOK_SECRET:-}
     depends_on:
       migrate: {condition: service_completed_successfully}
       redis: {condition: service_healthy}

@@ -1,0 +1,233 @@
+{
+  "schema_version": 1,
+  "generated_by": "scripts/verify-requirements-model.mjs",
+  "verification_id": "b19e4ddd-83a8-428b-b2a4-cf59a677bc04",
+  "created_at": "2026-09-12T07:05:44.594Z",
+  "environment": {
+    "api_origin": "http://127.0.0.1:18088",
+    "app_origin": "http://127.0.0.1:14173",
+    "required_instance_name": "My Jira Requirements Test",
+    "isolated_test_database": "myjira_requirements_test",
+    "private_project": true
+  },
+  "scope": {
+    "fixture": "tests/fixtures/requirements-prd.md",
+    "fixture_sha256": "b9cd7ea8354ac87458df8230f2c61c9c1462a4203133592676b3142993adf2fa",
+    "source": "bounded synthetic English derivative; 3 Epics, 3 Stories, 3 initial Tasks; one incremental Task",
+    "initial_source_sha256": "5994170f7f8d19afbf8c97fab1ec2beab7b200b7421fde4ff2c5eab1cf1fa3a2",
+    "incremental_source_sha256": "2b4d5b4c0741aaeacc6393c89dd7ac7bfbe8a4dc6378793318ca980b2bdfdd69",
+    "max_provider_calls": 3
+  },
+  "steps": {
+    "initial": {
+      "run_id": "64c8d528-42d9-4291-94ec-34647971aba7",
+      "status": "partial",
+      "policy_version": 1,
+      "input_fingerprint": "fe2432267f2031ecfbe5c3a6538eee2b8ed6c381b68615f0a5c458719b9904db",
+      "attempts": 1,
+      "created_at": "2026-09-12T07:05:44.884059+00:00",
+      "updated_at": "2026-09-12T07:06:20.565424+00:00",
+      "algorithm_version": "myjira-automation-1",
+      "batch_id": "e6b80458-351d-44f2-905e-6d1236e70460",
+      "command_count": 9,
+      "created_count": 9,
+      "source_mapping_input_count": 0,
+      "before_count": 0,
+      "after_count": 9,
+      "semantic_checks": {
+        "counts": {
+          "epic": 3,
+          "story": 3,
+          "task": 3
+        },
+        "item_count": 9,
+        "dependency_count": 1,
+        "source_locations_valid": true,
+        "all_three_prd_sections_covered": true,
+        "all_explicit_tasks_covered": true,
+        "source_estimate_intervals_preserved": true,
+        "source_dependency_directions_preserved": true,
+        "hierarchy_persisted": true,
+        "story_fields_and_criteria_persisted": true,
+        "integer_minute_estimates_persisted": true,
+        "task_dependencies_persisted": true,
+        "unresolved_inputs_disclosed": true,
+        "automatic_batch_applied": true,
+        "item_ids": [
+          "15734a4b-5fd3-4e01-8b69-4b8b184c5a5d",
+          "188de27b-31e7-4e07-97eb-aad241097346",
+          "391fa8ff-70db-4203-b835-4e5779d093ae",
+          "5e4e3135-d829-489f-a2a6-bcbe3bfd5c6f",
+          "63a38f7c-03bb-4c8b-965f-2a38ad89ce5b",
+          "74c30dd3-317e-436a-98cf-245914d93520",
+          "7f093e71-624b-4ec8-891d-7334acbbba8a",
+          "8fb9924a-cbc0-4950-ba67-b6d71d1d1be6",
+          "ea5206d3-b97c-42f7-b6f0-14211c7e5835"
+        ],
+        "revision": 17,
+        "provider": "openai",
+        "model": "gpt-5.6-terra"
+      }
+    },
+    "exact_request_idempotency": {
+      "run_id": "64c8d528-42d9-4291-94ec-34647971aba7",
+      "same_run": true,
+      "additional_provider_calls": 0
+    },
+    "same_source": {
+      "run_id": "36dba694-0685-4b96-80dd-346ac70c4515",
+      "status": "blocked",
+      "policy_version": 1,
+      "input_fingerprint": "c7d9e5cfb46ca6e37dc537e2232b8691ea66a6e7c0cb4c6e91842a9e35c0ddcc",
+      "attempts": 1,
+      "created_at": "2026-09-12T07:06:21.002298+00:00",
+      "updated_at": "2026-09-12T07:06:50.495751+00:00",
+      "algorithm_version": "myjira-automation-1",
+      "batch_id": null,
+      "command_count": 0,
+      "created_count": 0,
+      "source_mapping_input_count": 9,
+      "before_count": 0,
+      "after_count": 0,
+      "failure": {
+        "category": "model_epic_parent_choice_invalid",
+        "message_sha256": "34c7714a0730af7529bc49c2774e11bf37c11526066d075ad4ca14889f7f2ce5"
+      },
+      "rejected_without_item_creation_or_deletion": true
+    },
+    "incremental": {
+      "run_id": "474efbae-de01-4fae-963f-bf6dab7c18f7",
+      "status": "partial",
+      "policy_version": 3,
+      "input_fingerprint": "6e6418eaccafe566006989d632a4308a7f2e5d4bea39f22541d60610f99abbab",
+      "attempts": 1,
+      "created_at": "2026-09-12T07:33:59.056361+00:00",
+      "updated_at": "2026-09-12T07:34:34.601927+00:00",
+      "algorithm_version": "myjira-automation-1",
+      "batch_id": "a342b209-2aab-496a-8b06-b20f919dbd9e",
+      "command_count": 9,
+      "created_count": 1,
+      "source_mapping_input_count": 9,
+      "before_count": 8,
+      "after_count": 9,
+      "semantic_checks": {
+        "counts": {
+          "epic": 3,
+          "story": 3,
+          "task": 4
+        },
+        "item_count": 10,
+        "dependency_count": 2,
+        "unresolved_count": 3,
+        "estimated_task_minutes": 1500,
+        "source_locations_valid": true,
+        "all_three_prd_sections_covered": true,
+        "all_explicit_tasks_covered": true,
+        "source_estimate_intervals_preserved": true,
+        "source_dependency_directions_preserved": true,
+        "hierarchy_persisted": true,
+        "story_fields_and_criteria_persisted": true,
+        "integer_minute_estimates_persisted": true,
+        "task_dependencies_persisted": true,
+        "unresolved_inputs_disclosed": true,
+        "automatic_batch_applied": true,
+        "item_ids": [
+          "15734a4b-5fd3-4e01-8b69-4b8b184c5a5d",
+          "188de27b-31e7-4e07-97eb-aad241097346",
+          "391fa8ff-70db-4203-b835-4e5779d093ae",
+          "5e4e3135-d829-489f-a2a6-bcbe3bfd5c6f",
+          "63a38f7c-03bb-4c8b-965f-2a38ad89ce5b",
+          "74c30dd3-317e-436a-98cf-245914d93520",
+          "7f093e71-624b-4ec8-891d-7334acbbba8a",
+          "8fb9924a-cbc0-4950-ba67-b6d71d1d1be6",
+          "a5964e4a-fabe-43e2-8f0e-952beb461400",
+          "ea5206d3-b97c-42f7-b6f0-14211c7e5835"
+        ],
+        "revision": 64,
+        "provider": "openai",
+        "model": "gpt-5.6-terra",
+        "human_edit_preserved": true,
+        "preservation_reported": true,
+        "existing_work_item_ids_preserved": true,
+        "new_task_count": 1
+      }
+    }
+  },
+  "status": "partial",
+  "limits": [
+    "Selected synthetic PRD workflow only; the complete repository PRD is not exercised.",
+    "No real GitHub request or credential verification.",
+    "This run does not establish model accuracy for other inputs or production readiness.",
+    "No cookies, tokens, credentials, raw prompts, raw model text or user fields are retained in this artifact."
+  ],
+  "provider": {
+    "provider": "openai",
+    "model": "gpt-5.6-terra",
+    "configured": true,
+    "transport": "Responses",
+    "configuration_changed": false
+  },
+  "workspace_id": "44d49b7f-2de2-4a97-8383-4e9723968a81",
+  "updated_at": "2026-09-12T07:37:34.075Z",
+  "project_id": "d0f75f05-f2f5-4407-af54-52ba67b9db9e",
+  "source_key": "real-model:b19e4ddd-83a8-428b-b2a4-cf59a677bc04",
+  "policy_version": 1,
+  "provider_calls_used": 3,
+  "source_files_sha256": {
+    "apps/api/internal/automation/decompose.go": "37556465267efff229872ec56b3d9f4561fb65d961bff0fcd5fe7ccd2e092b9e",
+    "apps/api/internal/automation/worker.go": "289c6c2e059cfd09ce5f7364868e68228e199e39591b16b6d137e88fc5ff7d21",
+    "apps/api/internal/automation/service.go": "e16386a0ce3d0cfb2e74796424f07469af36ec1594790489e7f08fc58f56a236",
+    "apps/api/internal/integrations/ai.go": "d51c6ba7d6011b96e0fbc7c9fc5d23632a5b3972f4f1b8b28f74f4dc980e3b22",
+    "apps/api/internal/requirements/service.go": "bc27595b4e8759a66c22ba9df6a6e65babd7b43c37084ea5c82692127899038b",
+    "scripts/verify-requirements-model.mjs": "369138880eb6dbde662454c5e3740dc8fa1e72146b6ff5a09d001f9a6e10db70"
+  },
+  "failure_code": "same_source_model_epic_parent_choice_invalid",
+  "failure_cleanup": {
+    "policy_disabled": true,
+    "policy_version": 2,
+    "calls_used": 2,
+    "purpose": "Prevent background durable retries after this observed failure"
+  },
+  "continuation": {
+    "reason": "Use the single remaining call for incremental mapping and human-edit preservation; retain the rejected same-source result",
+    "policy_version": 3,
+    "started_at": "2026-09-12T07:33:58.971Z",
+    "prior_calls_used": 2,
+    "source_files_sha256": {
+      "apps/api/internal/automation/decompose.go": "12f6ce5d60bd8e394400b5e2eabe8aa233814e616b815cfd035a221464d43b14",
+      "apps/api/internal/automation/worker.go": "289c6c2e059cfd09ce5f7364868e68228e199e39591b16b6d137e88fc5ff7d21",
+      "apps/api/internal/automation/service.go": "9a23461dbc69a472ffd71ee5b5f0758857382e96b8bf37b08faf7ec1c1bb01c4",
+      "apps/api/internal/integrations/ai.go": "d51c6ba7d6011b96e0fbc7c9fc5d23632a5b3972f4f1b8b28f74f4dc980e3b22",
+      "apps/api/internal/requirements/service.go": "bc27595b4e8759a66c22ba9df6a6e65babd7b43c37084ea5c82692127899038b",
+      "scripts/verify-requirements-model.mjs": "ae61ad58c8e7f97a51c452e07e0f18ae08a90f6579757285a6198310925bae75"
+    }
+  },
+  "last_observed_policy": {
+    "version": 4,
+    "enabled": false,
+    "calls_used": 3,
+    "budget_calls": 3,
+    "observed_at": "2026-09-12T07:37:34.075Z"
+  },
+  "human_edit": {
+    "item_id": "15734a4b-5fd3-4e01-8b69-4b8b184c5a5d",
+    "version": 2,
+    "title_sha256": "076bca44745c1b831e3c3490cc805971c68f2100e628e1072635e89a1ea69bb8"
+  },
+  "finalization": {
+    "policy_disabled": true,
+    "calls_used": 3,
+    "budget_calls": 3,
+    "source_files_sha256": {
+      "apps/api/internal/automation/decompose.go": "12f6ce5d60bd8e394400b5e2eabe8aa233814e616b815cfd035a221464d43b14",
+      "apps/api/internal/automation/worker.go": "289c6c2e059cfd09ce5f7364868e68228e199e39591b16b6d137e88fc5ff7d21",
+      "apps/api/internal/automation/service.go": "9a23461dbc69a472ffd71ee5b5f0758857382e96b8bf37b08faf7ec1c1bb01c4",
+      "apps/api/internal/integrations/ai.go": "d51c6ba7d6011b96e0fbc7c9fc5d23632a5b3972f4f1b8b28f74f4dc980e3b22",
+      "apps/api/internal/requirements/service.go": "bc27595b4e8759a66c22ba9df6a6e65babd7b43c37084ea5c82692127899038b",
+      "scripts/verify-requirements-model.mjs": "dde199d3c2b506b587173b4bac52b8f1dd97e6f0292883ca984ecc30b4fcc65e"
+    },
+    "runtime_sources_unchanged_since_last_call": true,
+    "changed_runtime_source_paths": [],
+    "observed_at": "2026-09-12T07:37:34.075Z"
+  }
+}

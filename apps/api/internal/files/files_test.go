@@ -7,7 +7,6 @@ import (
 	"io"
 	"mime/multipart"
 	"net/http/httptest"
-	"os"
 	"strings"
 	"testing"
 
@@ -19,14 +18,7 @@ import (
 
 func storageFixture(t *testing.T) *testutil.Fixture {
 	t.Helper()
-	endpoint := os.Getenv("TEST_S3_ENDPOINT")
-	if endpoint == "" {
-		t.Skip("TEST_S3_ENDPOINT required for owned object-store integration")
-	}
-	t.Setenv("S3_ENDPOINT", endpoint)
-	t.Setenv("S3_BUCKET", "test-"+uuid.NewString())
-	t.Setenv("S3_ACCESS_KEY", "myjira_local")
-	t.Setenv("S3_SECRET_KEY", "myjira_local_storage")
+	testutil.ObjectStoreEnvironment(t)
 	f := testutil.New(t)
 	store, bucket, e := objectstore.Load(context.Background(), f.DB.SQL)
 	if e != nil {

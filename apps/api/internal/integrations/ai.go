@@ -49,6 +49,12 @@ func (h *handler) aiText(c *gin.Context) {
 	httpapi.JSON(c, 200, gin.H{"text": text, "model": config.String("model")})
 }
 
+// GenerateText shares the configured provider transport with durable automation.
+// Callers own input authorization, structured output validation and application.
+func GenerateText(ctx context.Context, config serviceconfig.Values, instruction, content string) (string, error) {
+	return generateText(ctx, config, instruction, content)
+}
+
 func generateText(ctx context.Context, config serviceconfig.Values, instruction, content string) (string, error) {
 	provider := config.String("provider")
 	if provider == "" {

@@ -20,6 +20,7 @@ import { bookmarkRoute, useFavorites } from "../lib/bookmarks";
 import { useMutation, useScope } from "../lib/hooks";
 import { useWorkspacePreference } from "../lib/preferences";
 import { cn } from "../lib/utils";
+import { requirementsEnabled } from "../lib/project-features";
 import { Button, ErrorBox, Field, Input, Menu, Modal, Select } from "./ui";
 
 interface SidebarPreferences {
@@ -325,6 +326,8 @@ export const SidebarProjects = observer(function SidebarProjects({
                   {items
                     .filter(
                       (child) =>
+                        (child.path !== "requirements" ||
+                          requirementsEnabled(item)) &&
                         item.features?.[
                           child.path as keyof NonNullable<typeof item.features>
                         ] !== false,

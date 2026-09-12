@@ -76,6 +76,7 @@ func fields(table string) []ent.Field {
 		f = append(f, scoped(true)...)
 		f = append(f, ref("state_id"), optionalRef("parent_id"), ref("created_by"), ref("updated_by"), field.String("name"), field.String("description_html").Default("<p></p>"), object("description_json"), field.Bytes("description_binary").Optional(), field.String("priority").Default("none"), field.Int64("sequence_id"), position(), date("start_date"), date("target_date"), instant("completed_at"), instant("archived_at"), field.Bool("is_draft").Default(false), field.Float("estimate").Optional().Nillable(), text("type_name"), field.Int64("version").Default(1))
 		f = append(f, optionalRef("estimate_point_id"))
+		f = append(f, field.String("requirement_type").Optional().Nillable(), text("story_role"), text("story_goal"), text("story_benefit"), field.JSON("acceptance_criteria", []string{}).Default([]string{}), optionalRef("activity_id"), field.Float("map_position").Default(1024), field.Int("estimated_minutes").Optional().Nillable(), field.Int("remaining_minutes").Optional().Nillable(), field.JSON("required_skills", []string{}).Default([]string{}), field.JSON("allocation_weights", []map[string]any{}).Default([]map[string]any{}), field.Bool("planning_locked").Default(false))
 	case "estimates":
 		f = append(f, scoped(true)...)
 		f = append(f, field.String("name"), text("description"), field.String("kind").Default("points"))

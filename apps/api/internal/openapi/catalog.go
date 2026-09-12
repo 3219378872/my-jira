@@ -161,5 +161,6 @@ func routeCatalog() map[string]operation {
 	addPlanningRoutes(b, w, p)
 	addSupportRoutes(b, w)
 	addIntegrationRoutes(b, w, p)
+	addRequirementsRoutes(b, p)
 	return b.entries
 }

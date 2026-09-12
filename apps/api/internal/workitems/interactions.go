@@ -312,6 +312,11 @@ func (h *handler) addRelation(c *gin.Context) {
 		if _, e := loadIssue(c, q, s, body.TargetID, true); e != nil {
 			return invalid("Related work item is not accessible in this project")
 		}
+		var accessErr error
+		s, accessErr = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, identity.Member)
+		if accessErr != nil {
+			return accessErr
+		}
 		if body.Type == "blocks" {
 			var cycle bool
 			if e := q.QueryRowContext(c.Request.Context(), `WITH RECURSIVE reachable(id,path) AS (SELECT $1::uuid,ARRAY[$1::uuid] UNION ALL SELECT r.target_id,x.path||r.target_id FROM work_item_relations r JOIN reachable x ON r.source_id=x.id WHERE r.relation_type='blocks' AND r.deleted_at IS NULL AND NOT r.target_id=ANY(x.path)) SELECT EXISTS(SELECT 1 FROM reachable WHERE id=$2)`, target, source).Scan(&cycle); e != nil {
@@ -356,6 +361,11 @@ func (h *handler) deleteRelation(c *gin.Context) {
 		}
 		if _, e := loadIssue(c, q, s, id, true); e != nil {
 			return e
+		}
+		var accessErr error
+		s, accessErr = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, identity.Member)
+		if accessErr != nil {
+			return accessErr
 		}
 		res, e := q.ExecContext(c.Request.Context(), `UPDATE work_item_relations SET deleted_at=now() WHERE id=$1 AND (source_id=$2 OR target_id=$2) AND deleted_at IS NULL`, rid, id)
 		if e != nil {

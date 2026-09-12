@@ -175,6 +175,51 @@ func EstimatePointID(v uuid.UUID) predicate.WorkItem {
 	return predicate.WorkItem(sql.FieldEQ(FieldEstimatePointID, v))
 }
 
+// RequirementType applies equality check predicate on the "requirement_type" field. It's identical to RequirementTypeEQ.
+func RequirementType(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldRequirementType, v))
+}
+
+// StoryRole applies equality check predicate on the "story_role" field. It's identical to StoryRoleEQ.
+func StoryRole(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryRole, v))
+}
+
+// StoryGoal applies equality check predicate on the "story_goal" field. It's identical to StoryGoalEQ.
+func StoryGoal(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryGoal, v))
+}
+
+// StoryBenefit applies equality check predicate on the "story_benefit" field. It's identical to StoryBenefitEQ.
+func StoryBenefit(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryBenefit, v))
+}
+
+// ActivityID applies equality check predicate on the "activity_id" field. It's identical to ActivityIDEQ.
+func ActivityID(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldActivityID, v))
+}
+
+// MapPosition applies equality check predicate on the "map_position" field. It's identical to MapPositionEQ.
+func MapPosition(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldMapPosition, v))
+}
+
+// EstimatedMinutes applies equality check predicate on the "estimated_minutes" field. It's identical to EstimatedMinutesEQ.
+func EstimatedMinutes(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldEstimatedMinutes, v))
+}
+
+// RemainingMinutes applies equality check predicate on the "remaining_minutes" field. It's identical to RemainingMinutesEQ.
+func RemainingMinutes(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldRemainingMinutes, v))
+}
+
+// PlanningLocked applies equality check predicate on the "planning_locked" field. It's identical to PlanningLockedEQ.
+func PlanningLocked(v bool) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldPlanningLocked, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.WorkItem {
 	return predicate.WorkItem(sql.FieldEQ(FieldCreatedAt, v))
@@ -1293,6 +1338,476 @@ func EstimatePointIDIsNil() predicate.WorkItem {
 // EstimatePointIDNotNil applies the NotNil predicate on the "estimate_point_id" field.
 func EstimatePointIDNotNil() predicate.WorkItem {
 	return predicate.WorkItem(sql.FieldNotNull(FieldEstimatePointID))
+}
+
+// RequirementTypeEQ applies the EQ predicate on the "requirement_type" field.
+func RequirementTypeEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldRequirementType, v))
+}
+
+// RequirementTypeNEQ applies the NEQ predicate on the "requirement_type" field.
+func RequirementTypeNEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldRequirementType, v))
+}
+
+// RequirementTypeIn applies the In predicate on the "requirement_type" field.
+func RequirementTypeIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldRequirementType, vs...))
+}
+
+// RequirementTypeNotIn applies the NotIn predicate on the "requirement_type" field.
+func RequirementTypeNotIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldRequirementType, vs...))
+}
+
+// RequirementTypeGT applies the GT predicate on the "requirement_type" field.
+func RequirementTypeGT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldRequirementType, v))
+}
+
+// RequirementTypeGTE applies the GTE predicate on the "requirement_type" field.
+func RequirementTypeGTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldRequirementType, v))
+}
+
+// RequirementTypeLT applies the LT predicate on the "requirement_type" field.
+func RequirementTypeLT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldRequirementType, v))
+}
+
+// RequirementTypeLTE applies the LTE predicate on the "requirement_type" field.
+func RequirementTypeLTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldRequirementType, v))
+}
+
+// RequirementTypeContains applies the Contains predicate on the "requirement_type" field.
+func RequirementTypeContains(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContains(FieldRequirementType, v))
+}
+
+// RequirementTypeHasPrefix applies the HasPrefix predicate on the "requirement_type" field.
+func RequirementTypeHasPrefix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasPrefix(FieldRequirementType, v))
+}
+
+// RequirementTypeHasSuffix applies the HasSuffix predicate on the "requirement_type" field.
+func RequirementTypeHasSuffix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasSuffix(FieldRequirementType, v))
+}
+
+// RequirementTypeIsNil applies the IsNil predicate on the "requirement_type" field.
+func RequirementTypeIsNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIsNull(FieldRequirementType))
+}
+
+// RequirementTypeNotNil applies the NotNil predicate on the "requirement_type" field.
+func RequirementTypeNotNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotNull(FieldRequirementType))
+}
+
+// RequirementTypeEqualFold applies the EqualFold predicate on the "requirement_type" field.
+func RequirementTypeEqualFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEqualFold(FieldRequirementType, v))
+}
+
+// RequirementTypeContainsFold applies the ContainsFold predicate on the "requirement_type" field.
+func RequirementTypeContainsFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContainsFold(FieldRequirementType, v))
+}
+
+// StoryRoleEQ applies the EQ predicate on the "story_role" field.
+func StoryRoleEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryRole, v))
+}
+
+// StoryRoleNEQ applies the NEQ predicate on the "story_role" field.
+func StoryRoleNEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldStoryRole, v))
+}
+
+// StoryRoleIn applies the In predicate on the "story_role" field.
+func StoryRoleIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldStoryRole, vs...))
+}
+
+// StoryRoleNotIn applies the NotIn predicate on the "story_role" field.
+func StoryRoleNotIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldStoryRole, vs...))
+}
+
+// StoryRoleGT applies the GT predicate on the "story_role" field.
+func StoryRoleGT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldStoryRole, v))
+}
+
+// StoryRoleGTE applies the GTE predicate on the "story_role" field.
+func StoryRoleGTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldStoryRole, v))
+}
+
+// StoryRoleLT applies the LT predicate on the "story_role" field.
+func StoryRoleLT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldStoryRole, v))
+}
+
+// StoryRoleLTE applies the LTE predicate on the "story_role" field.
+func StoryRoleLTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldStoryRole, v))
+}
+
+// StoryRoleContains applies the Contains predicate on the "story_role" field.
+func StoryRoleContains(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContains(FieldStoryRole, v))
+}
+
+// StoryRoleHasPrefix applies the HasPrefix predicate on the "story_role" field.
+func StoryRoleHasPrefix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasPrefix(FieldStoryRole, v))
+}
+
+// StoryRoleHasSuffix applies the HasSuffix predicate on the "story_role" field.
+func StoryRoleHasSuffix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasSuffix(FieldStoryRole, v))
+}
+
+// StoryRoleEqualFold applies the EqualFold predicate on the "story_role" field.
+func StoryRoleEqualFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEqualFold(FieldStoryRole, v))
+}
+
+// StoryRoleContainsFold applies the ContainsFold predicate on the "story_role" field.
+func StoryRoleContainsFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContainsFold(FieldStoryRole, v))
+}
+
+// StoryGoalEQ applies the EQ predicate on the "story_goal" field.
+func StoryGoalEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryGoal, v))
+}
+
+// StoryGoalNEQ applies the NEQ predicate on the "story_goal" field.
+func StoryGoalNEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldStoryGoal, v))
+}
+
+// StoryGoalIn applies the In predicate on the "story_goal" field.
+func StoryGoalIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldStoryGoal, vs...))
+}
+
+// StoryGoalNotIn applies the NotIn predicate on the "story_goal" field.
+func StoryGoalNotIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldStoryGoal, vs...))
+}
+
+// StoryGoalGT applies the GT predicate on the "story_goal" field.
+func StoryGoalGT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldStoryGoal, v))
+}
+
+// StoryGoalGTE applies the GTE predicate on the "story_goal" field.
+func StoryGoalGTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldStoryGoal, v))
+}
+
+// StoryGoalLT applies the LT predicate on the "story_goal" field.
+func StoryGoalLT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldStoryGoal, v))
+}
+
+// StoryGoalLTE applies the LTE predicate on the "story_goal" field.
+func StoryGoalLTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldStoryGoal, v))
+}
+
+// StoryGoalContains applies the Contains predicate on the "story_goal" field.
+func StoryGoalContains(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContains(FieldStoryGoal, v))
+}
+
+// StoryGoalHasPrefix applies the HasPrefix predicate on the "story_goal" field.
+func StoryGoalHasPrefix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasPrefix(FieldStoryGoal, v))
+}
+
+// StoryGoalHasSuffix applies the HasSuffix predicate on the "story_goal" field.
+func StoryGoalHasSuffix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasSuffix(FieldStoryGoal, v))
+}
+
+// StoryGoalEqualFold applies the EqualFold predicate on the "story_goal" field.
+func StoryGoalEqualFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEqualFold(FieldStoryGoal, v))
+}
+
+// StoryGoalContainsFold applies the ContainsFold predicate on the "story_goal" field.
+func StoryGoalContainsFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContainsFold(FieldStoryGoal, v))
+}
+
+// StoryBenefitEQ applies the EQ predicate on the "story_benefit" field.
+func StoryBenefitEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldStoryBenefit, v))
+}
+
+// StoryBenefitNEQ applies the NEQ predicate on the "story_benefit" field.
+func StoryBenefitNEQ(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldStoryBenefit, v))
+}
+
+// StoryBenefitIn applies the In predicate on the "story_benefit" field.
+func StoryBenefitIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldStoryBenefit, vs...))
+}
+
+// StoryBenefitNotIn applies the NotIn predicate on the "story_benefit" field.
+func StoryBenefitNotIn(vs ...string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldStoryBenefit, vs...))
+}
+
+// StoryBenefitGT applies the GT predicate on the "story_benefit" field.
+func StoryBenefitGT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldStoryBenefit, v))
+}
+
+// StoryBenefitGTE applies the GTE predicate on the "story_benefit" field.
+func StoryBenefitGTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldStoryBenefit, v))
+}
+
+// StoryBenefitLT applies the LT predicate on the "story_benefit" field.
+func StoryBenefitLT(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldStoryBenefit, v))
+}
+
+// StoryBenefitLTE applies the LTE predicate on the "story_benefit" field.
+func StoryBenefitLTE(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldStoryBenefit, v))
+}
+
+// StoryBenefitContains applies the Contains predicate on the "story_benefit" field.
+func StoryBenefitContains(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContains(FieldStoryBenefit, v))
+}
+
+// StoryBenefitHasPrefix applies the HasPrefix predicate on the "story_benefit" field.
+func StoryBenefitHasPrefix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasPrefix(FieldStoryBenefit, v))
+}
+
+// StoryBenefitHasSuffix applies the HasSuffix predicate on the "story_benefit" field.
+func StoryBenefitHasSuffix(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldHasSuffix(FieldStoryBenefit, v))
+}
+
+// StoryBenefitEqualFold applies the EqualFold predicate on the "story_benefit" field.
+func StoryBenefitEqualFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEqualFold(FieldStoryBenefit, v))
+}
+
+// StoryBenefitContainsFold applies the ContainsFold predicate on the "story_benefit" field.
+func StoryBenefitContainsFold(v string) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldContainsFold(FieldStoryBenefit, v))
+}
+
+// ActivityIDEQ applies the EQ predicate on the "activity_id" field.
+func ActivityIDEQ(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldActivityID, v))
+}
+
+// ActivityIDNEQ applies the NEQ predicate on the "activity_id" field.
+func ActivityIDNEQ(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldActivityID, v))
+}
+
+// ActivityIDIn applies the In predicate on the "activity_id" field.
+func ActivityIDIn(vs ...uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldActivityID, vs...))
+}
+
+// ActivityIDNotIn applies the NotIn predicate on the "activity_id" field.
+func ActivityIDNotIn(vs ...uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldActivityID, vs...))
+}
+
+// ActivityIDGT applies the GT predicate on the "activity_id" field.
+func ActivityIDGT(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldActivityID, v))
+}
+
+// ActivityIDGTE applies the GTE predicate on the "activity_id" field.
+func ActivityIDGTE(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldActivityID, v))
+}
+
+// ActivityIDLT applies the LT predicate on the "activity_id" field.
+func ActivityIDLT(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldActivityID, v))
+}
+
+// ActivityIDLTE applies the LTE predicate on the "activity_id" field.
+func ActivityIDLTE(v uuid.UUID) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldActivityID, v))
+}
+
+// ActivityIDIsNil applies the IsNil predicate on the "activity_id" field.
+func ActivityIDIsNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIsNull(FieldActivityID))
+}
+
+// ActivityIDNotNil applies the NotNil predicate on the "activity_id" field.
+func ActivityIDNotNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotNull(FieldActivityID))
+}
+
+// MapPositionEQ applies the EQ predicate on the "map_position" field.
+func MapPositionEQ(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldMapPosition, v))
+}
+
+// MapPositionNEQ applies the NEQ predicate on the "map_position" field.
+func MapPositionNEQ(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldMapPosition, v))
+}
+
+// MapPositionIn applies the In predicate on the "map_position" field.
+func MapPositionIn(vs ...float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldMapPosition, vs...))
+}
+
+// MapPositionNotIn applies the NotIn predicate on the "map_position" field.
+func MapPositionNotIn(vs ...float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldMapPosition, vs...))
+}
+
+// MapPositionGT applies the GT predicate on the "map_position" field.
+func MapPositionGT(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldMapPosition, v))
+}
+
+// MapPositionGTE applies the GTE predicate on the "map_position" field.
+func MapPositionGTE(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldMapPosition, v))
+}
+
+// MapPositionLT applies the LT predicate on the "map_position" field.
+func MapPositionLT(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldMapPosition, v))
+}
+
+// MapPositionLTE applies the LTE predicate on the "map_position" field.
+func MapPositionLTE(v float64) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldMapPosition, v))
+}
+
+// EstimatedMinutesEQ applies the EQ predicate on the "estimated_minutes" field.
+func EstimatedMinutesEQ(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesNEQ applies the NEQ predicate on the "estimated_minutes" field.
+func EstimatedMinutesNEQ(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesIn applies the In predicate on the "estimated_minutes" field.
+func EstimatedMinutesIn(vs ...int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldEstimatedMinutes, vs...))
+}
+
+// EstimatedMinutesNotIn applies the NotIn predicate on the "estimated_minutes" field.
+func EstimatedMinutesNotIn(vs ...int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldEstimatedMinutes, vs...))
+}
+
+// EstimatedMinutesGT applies the GT predicate on the "estimated_minutes" field.
+func EstimatedMinutesGT(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesGTE applies the GTE predicate on the "estimated_minutes" field.
+func EstimatedMinutesGTE(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesLT applies the LT predicate on the "estimated_minutes" field.
+func EstimatedMinutesLT(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesLTE applies the LTE predicate on the "estimated_minutes" field.
+func EstimatedMinutesLTE(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldEstimatedMinutes, v))
+}
+
+// EstimatedMinutesIsNil applies the IsNil predicate on the "estimated_minutes" field.
+func EstimatedMinutesIsNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIsNull(FieldEstimatedMinutes))
+}
+
+// EstimatedMinutesNotNil applies the NotNil predicate on the "estimated_minutes" field.
+func EstimatedMinutesNotNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotNull(FieldEstimatedMinutes))
+}
+
+// RemainingMinutesEQ applies the EQ predicate on the "remaining_minutes" field.
+func RemainingMinutesEQ(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesNEQ applies the NEQ predicate on the "remaining_minutes" field.
+func RemainingMinutesNEQ(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesIn applies the In predicate on the "remaining_minutes" field.
+func RemainingMinutesIn(vs ...int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIn(FieldRemainingMinutes, vs...))
+}
+
+// RemainingMinutesNotIn applies the NotIn predicate on the "remaining_minutes" field.
+func RemainingMinutesNotIn(vs ...int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotIn(FieldRemainingMinutes, vs...))
+}
+
+// RemainingMinutesGT applies the GT predicate on the "remaining_minutes" field.
+func RemainingMinutesGT(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGT(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesGTE applies the GTE predicate on the "remaining_minutes" field.
+func RemainingMinutesGTE(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldGTE(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesLT applies the LT predicate on the "remaining_minutes" field.
+func RemainingMinutesLT(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLT(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesLTE applies the LTE predicate on the "remaining_minutes" field.
+func RemainingMinutesLTE(v int) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldLTE(FieldRemainingMinutes, v))
+}
+
+// RemainingMinutesIsNil applies the IsNil predicate on the "remaining_minutes" field.
+func RemainingMinutesIsNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldIsNull(FieldRemainingMinutes))
+}
+
+// RemainingMinutesNotNil applies the NotNil predicate on the "remaining_minutes" field.
+func RemainingMinutesNotNil() predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNotNull(FieldRemainingMinutes))
+}
+
+// PlanningLockedEQ applies the EQ predicate on the "planning_locked" field.
+func PlanningLockedEQ(v bool) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldEQ(FieldPlanningLocked, v))
+}
+
+// PlanningLockedNEQ applies the NEQ predicate on the "planning_locked" field.
+func PlanningLockedNEQ(v bool) predicate.WorkItem {
+	return predicate.WorkItem(sql.FieldNEQ(FieldPlanningLocked, v))
 }
 
 // And groups predicates with the AND operator between them.

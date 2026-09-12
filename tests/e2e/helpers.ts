@@ -2,8 +2,8 @@ import { expect, type Page } from "@playwright/test";
 
 export const email = "demo@myjira.local";
 export const password = "MyJira-Local-2026!";
-export const workspace = "93facd49-fcff-469e-814e-90fd667820c8";
-export const project = "f785ccab-22ca-490a-b0c4-a57098258cfb";
+export const workspace = process.env.E2E_WORKSPACE_ID ?? "93facd49-fcff-469e-814e-90fd667820c8";
+export const project = process.env.E2E_PROJECT_ID ?? "f785ccab-22ca-490a-b0c4-a57098258cfb";
 export const projectRoute = `/w/studio/projects/${project}`;
 export const projectAPI = `/api/v1/workspaces/${workspace}/projects/${project}`;
 

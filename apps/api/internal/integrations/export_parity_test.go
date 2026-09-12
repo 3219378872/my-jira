@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"testing"
 
@@ -20,14 +19,7 @@ import (
 )
 
 func TestExportsUseListFiltersAcrossFormats(t *testing.T) {
-	endpoint := os.Getenv("TEST_S3_ENDPOINT")
-	if endpoint == "" {
-		t.Skip("TEST_S3_ENDPOINT required")
-	}
-	t.Setenv("S3_ENDPOINT", endpoint)
-	t.Setenv("S3_BUCKET", "test-"+uuid.NewString())
-	t.Setenv("S3_ACCESS_KEY", "myjira_local")
-	t.Setenv("S3_SECRET_KEY", "myjira_local_storage")
+	testutil.ObjectStoreEnvironment(t)
 	f := testutil.New(t)
 	router := f.Router(Register, workitems.Register)
 	store, bucket, err := objectstore.Load(context.Background(), f.DB.SQL)

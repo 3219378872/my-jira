@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/hibiken/asynq"
+	"my-jira/apps/api/internal/automation"
 	"my-jira/apps/api/internal/files"
 	"my-jira/apps/api/internal/foundation"
 	"my-jira/apps/api/internal/integrations"
@@ -16,6 +17,7 @@ import (
 	"my-jira/apps/api/internal/platform/database"
 	"my-jira/apps/api/internal/platform/identity"
 	"my-jira/apps/api/internal/platform/jobs"
+	"my-jira/apps/api/internal/quality"
 	"my-jira/apps/api/internal/support"
 	"my-jira/apps/api/internal/workitems"
 )
@@ -38,17 +40,30 @@ func main() {
 	client := asynq.NewClient(option)
 	defer client.Close()
 	go jobs.RunDispatcher(ctx, db, client)
+	periodic := asynq.NewScheduler(option, nil)
+	if _, err = periodic.Register("@every 15m", asynq.NewTask("quality.reconcile", []byte("{}")), asynq.Unique(14*time.Minute)); err != nil {
+		slog.Error("quality reconciliation registration failed", "error", err)
+		os.Exit(1)
+	}
+	if err = periodic.Start(); err != nil {
+		slog.Error("periodic task scheduler failed", "error", err)
+		os.Exit(1)
+	}
+	defer periodic.Shutdown()
 	server := asynq.NewServer(option, asynq.Config{Concurrency: 8})
 	mux := asynq.NewServeMux()
 	foundation.RegisterJobs(mux, deps)
 	integrations.RegisterJobs(mux, deps)
 	workitems.RegisterJobs(mux, deps)
 	support.RegisterJobs(mux, deps)
+	automation.RegisterTasks(mux, deps)
+	quality.RegisterTasks(mux, deps)
 	if err = server.Start(mux); err != nil {
 		slog.Error("worker start failed", "error", err)
 		os.Exit(1)
 	}
 	go workitems.RunScheduler(ctx, deps)
+	go automation.RunScheduler(ctx, deps)
 	go cleanupAssets(ctx, deps)
 	<-ctx.Done()
 	server.Shutdown()

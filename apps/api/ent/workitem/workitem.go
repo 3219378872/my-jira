@@ -64,6 +64,30 @@ const (
 	FieldVersion = "version"
 	// FieldEstimatePointID holds the string denoting the estimate_point_id field in the database.
 	FieldEstimatePointID = "estimate_point_id"
+	// FieldRequirementType holds the string denoting the requirement_type field in the database.
+	FieldRequirementType = "requirement_type"
+	// FieldStoryRole holds the string denoting the story_role field in the database.
+	FieldStoryRole = "story_role"
+	// FieldStoryGoal holds the string denoting the story_goal field in the database.
+	FieldStoryGoal = "story_goal"
+	// FieldStoryBenefit holds the string denoting the story_benefit field in the database.
+	FieldStoryBenefit = "story_benefit"
+	// FieldAcceptanceCriteria holds the string denoting the acceptance_criteria field in the database.
+	FieldAcceptanceCriteria = "acceptance_criteria"
+	// FieldActivityID holds the string denoting the activity_id field in the database.
+	FieldActivityID = "activity_id"
+	// FieldMapPosition holds the string denoting the map_position field in the database.
+	FieldMapPosition = "map_position"
+	// FieldEstimatedMinutes holds the string denoting the estimated_minutes field in the database.
+	FieldEstimatedMinutes = "estimated_minutes"
+	// FieldRemainingMinutes holds the string denoting the remaining_minutes field in the database.
+	FieldRemainingMinutes = "remaining_minutes"
+	// FieldRequiredSkills holds the string denoting the required_skills field in the database.
+	FieldRequiredSkills = "required_skills"
+	// FieldAllocationWeights holds the string denoting the allocation_weights field in the database.
+	FieldAllocationWeights = "allocation_weights"
+	// FieldPlanningLocked holds the string denoting the planning_locked field in the database.
+	FieldPlanningLocked = "planning_locked"
 	// Table holds the table name of the workitem in the database.
 	Table = "work_items"
 )
@@ -96,6 +120,18 @@ var Columns = []string{
 	FieldTypeName,
 	FieldVersion,
 	FieldEstimatePointID,
+	FieldRequirementType,
+	FieldStoryRole,
+	FieldStoryGoal,
+	FieldStoryBenefit,
+	FieldAcceptanceCriteria,
+	FieldActivityID,
+	FieldMapPosition,
+	FieldEstimatedMinutes,
+	FieldRemainingMinutes,
+	FieldRequiredSkills,
+	FieldAllocationWeights,
+	FieldPlanningLocked,
 }
 
 // ValidColumn reports if the column name is valid (part of the table columns).
@@ -129,6 +165,22 @@ var (
 	DefaultTypeName string
 	// DefaultVersion holds the default value on creation for the "version" field.
 	DefaultVersion int64
+	// DefaultStoryRole holds the default value on creation for the "story_role" field.
+	DefaultStoryRole string
+	// DefaultStoryGoal holds the default value on creation for the "story_goal" field.
+	DefaultStoryGoal string
+	// DefaultStoryBenefit holds the default value on creation for the "story_benefit" field.
+	DefaultStoryBenefit string
+	// DefaultAcceptanceCriteria holds the default value on creation for the "acceptance_criteria" field.
+	DefaultAcceptanceCriteria []string
+	// DefaultMapPosition holds the default value on creation for the "map_position" field.
+	DefaultMapPosition float64
+	// DefaultRequiredSkills holds the default value on creation for the "required_skills" field.
+	DefaultRequiredSkills []string
+	// DefaultAllocationWeights holds the default value on creation for the "allocation_weights" field.
+	DefaultAllocationWeights []map[string]interface{}
+	// DefaultPlanningLocked holds the default value on creation for the "planning_locked" field.
+	DefaultPlanningLocked bool
 	// DefaultID holds the default value on creation for the "id" field.
 	DefaultID func() uuid.UUID
 )
@@ -254,4 +306,49 @@ func ByVersion(opts ...sql.OrderTermOption) OrderOption {
 // ByEstimatePointID orders the results by the estimate_point_id field.
 func ByEstimatePointID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEstimatePointID, opts...).ToFunc()
+}
+
+// ByRequirementType orders the results by the requirement_type field.
+func ByRequirementType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRequirementType, opts...).ToFunc()
+}
+
+// ByStoryRole orders the results by the story_role field.
+func ByStoryRole(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStoryRole, opts...).ToFunc()
+}
+
+// ByStoryGoal orders the results by the story_goal field.
+func ByStoryGoal(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStoryGoal, opts...).ToFunc()
+}
+
+// ByStoryBenefit orders the results by the story_benefit field.
+func ByStoryBenefit(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldStoryBenefit, opts...).ToFunc()
+}
+
+// ByActivityID orders the results by the activity_id field.
+func ByActivityID(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldActivityID, opts...).ToFunc()
+}
+
+// ByMapPosition orders the results by the map_position field.
+func ByMapPosition(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldMapPosition, opts...).ToFunc()
+}
+
+// ByEstimatedMinutes orders the results by the estimated_minutes field.
+func ByEstimatedMinutes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldEstimatedMinutes, opts...).ToFunc()
+}
+
+// ByRemainingMinutes orders the results by the remaining_minutes field.
+func ByRemainingMinutes(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldRemainingMinutes, opts...).ToFunc()
+}
+
+// ByPlanningLocked orders the results by the planning_locked field.
+func ByPlanningLocked(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPlanningLocked, opts...).ToFunc()
 }

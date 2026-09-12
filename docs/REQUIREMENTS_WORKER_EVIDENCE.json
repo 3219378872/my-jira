@@ -1,0 +1,49 @@
+{
+  "generated_by": "scripts/verify-requirements-worker.mjs",
+  "schema_version": 1,
+  "verification_id": "936abbf6-dda5-4e8c-b8f2-e644c032e60f",
+  "workspace_id": "44d49b7f-2de2-4a97-8383-4e9723968a81",
+  "status": "passed",
+  "api_origin": "http://127.0.0.1:18088",
+  "database": "myjira_requirements_test",
+  "created_at": "2026-09-12T07:28:50.805Z",
+  "limits": [
+    "Graceful worker stop and restart with a PostgreSQL outbox entry; no Redis restart or in-flight process-kill claim.",
+    "Forecast only, zero model budget; no provider request or predictive-accuracy claim."
+  ],
+  "project_id": "2dc64a7b-3f61-4ed6-b51b-db3a9eb0949c",
+  "run_id": "27c88d80-c69a-4feb-bfd5-ee00966c9bcd",
+  "input_fingerprint": "6166bfb712ff7b374459dd83de7e0da75c7a2fadee025d3d23b6d9ad75a81562",
+  "before": {
+    "status": "queued",
+    "attempts": 0,
+    "policy_version": 2,
+    "observed_at": "2026-09-12T07:36:48.628Z"
+  },
+  "rejected_inputs": [
+    {
+      "run_id": "6fe9e3e4-516c-4ea2-b708-6085fa1dec61",
+      "status": "blocked",
+      "attempts": 0,
+      "reason": "input_revision_changed",
+      "before": {
+        "status": "queued",
+        "attempts": 0,
+        "policy_version": 1,
+        "observed_at": "2026-09-12T07:28:50.878Z"
+      },
+      "observed_at": "2026-09-12T07:36:48.585Z"
+    }
+  ],
+  "request_key": "936abbf6-dda5-4e8c-b8f2-e644c032e60f:refresh:1",
+  "after": {
+    "status": "completed",
+    "attempts": 1,
+    "forecast_count": 1,
+    "forecast_status": "insufficient_data",
+    "replay_run_id": "27c88d80-c69a-4feb-bfd5-ee00966c9bcd",
+    "calls_used": 0,
+    "policy_enabled": false,
+    "observed_at": "2026-09-12T07:37:16.245Z"
+  }
+}

@@ -1,0 +1,45 @@
+# Isolated requirements acceptance infrastructure. Never attaches the app's volumes.
+name: my-jira-requirements-test
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: myjira_test
+      POSTGRES_PASSWORD: requirements_local_test
+      POSTGRES_DB: myjira_requirements_test
+    ports:
+      - "127.0.0.1:35432:5432"
+    volumes:
+      - requirements_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myjira_test -d myjira_requirements_test"]
+      interval: 2s
+      timeout: 2s
+      retries: 30
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes", "--appendfsync", "everysec"]
+    ports:
+      - "127.0.0.1:36379:6379"
+    volumes:
+      - requirements_redis:/data
+  minio:
+    image: minio/minio:RELEASE.2025-09-07T16-13-09Z
+    command: ["server", "/data", "--console-address", ":9001"]
+    environment:
+      MINIO_ROOT_USER: myjira_requirements_test
+      MINIO_ROOT_PASSWORD: requirements_storage_test
+    ports:
+      - "127.0.0.1:39000:9000"
+      - "127.0.0.1:39001:9001"
+    volumes:
+      - requirements_objects:/data
+  mailpit:
+    image: axllent/mailpit:v1.27
+    ports:
+      - "127.0.0.1:31025:1025"
+      - "127.0.0.1:38025:8025"
+volumes:
+  requirements_postgres:
+  requirements_redis:
+  requirements_objects:

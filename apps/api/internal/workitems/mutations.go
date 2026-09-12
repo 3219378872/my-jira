@@ -20,8 +20,15 @@ import (
 func fields(input map[string]json.RawMessage) (map[string]any, error) {
 	out := map[string]any{}
 	for k, raw := range input {
+		if value, handled, err := requirementField(k, raw); handled {
+			if err != nil {
+				return nil, err
+			}
+			out[k] = value
+			continue
+		}
 		switch k {
-		case "version", "assignee_ids", "label_ids", "cycle_id", "module_ids":
+		case "version", "assignee_ids", "label_ids", "cycle_id", "module_ids", "dependency_ids":
 			continue
 		case "name", "description_html", "type_name":
 			v, e := stringField(raw)
@@ -56,7 +63,7 @@ func fields(input map[string]json.RawMessage) (map[string]any, error) {
 				return nil, invalid("Invalid priority")
 			}
 			out[k] = v
-		case "state_id", "parent_id", "estimate_point_id":
+		case "state_id", "parent_id", "estimate_point_id", "activity_id":
 			v, e := uuidValue(raw, k != "state_id")
 			if e != nil {
 				return nil, e
@@ -89,13 +96,13 @@ func fields(input map[string]json.RawMessage) (map[string]any, error) {
 				return nil, invalid("Invalid archive timestamp")
 			}
 			out[k] = t
-		case "is_draft":
+		case "is_draft", "planning_locked":
 			var v bool
 			if e := json.Unmarshal(raw, &v); e != nil || string(raw) == "null" {
 				return nil, invalid("Invalid draft flag")
 			}
 			out[k] = v
-		case "estimate", "position":
+		case "estimate", "position", "map_position":
 			if string(raw) == "null" && k == "estimate" {
 				out[k] = nil
 				continue
@@ -273,7 +280,7 @@ func (h *handler) replaceRelations(c *gin.Context, q database.DBTX, s identity.S
 			}
 		}
 	}
-	return nil
+	return replaceDependencies(c, q, s, id, input)
 }
 
 func (h *handler) record(c *gin.Context, q database.DBTX, s identity.Scope, id uuid.UUID, action string, before, after any) error {
@@ -281,13 +288,25 @@ func (h *handler) record(c *gin.Context, q database.DBTX, s identity.Scope, id u
 }
 
 func (h *handler) createItem(c *gin.Context, q database.DBTX, s identity.Scope, input map[string]json.RawMessage) (map[string]any, error) {
-	if _, ok := input["parent_id"]; ok {
-		if e := lockGraphs(c, q, s.ProjectID); e != nil {
-			return nil, e
-		}
+	if e := lockGraphs(c, q, s.ProjectID); e != nil {
+		return nil, e
 	}
 	if e := data.LockEstimates(c.Request.Context(), q, s.ProjectID); e != nil {
 		return nil, e
+	}
+	var accessErr error
+	minimum := identity.Member
+	if s.Role < identity.Member {
+		minimum = identity.Guest
+	} // Intake has its own guest submission contract.
+	s, accessErr = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, minimum)
+	if accessErr != nil {
+		return nil, accessErr
+	}
+	if hasRequirementInput(input) {
+		if err := RequireRequirements(c.Request.Context(), q, s.WorkspaceID, s.ProjectID); err != nil {
+			return nil, err
+		}
 	}
 	values, e := fields(input)
 	if e != nil {
@@ -311,6 +330,25 @@ func (h *handler) createItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 	if e = validateFields(c, q, s, id, values); e != nil {
 		return nil, e
 	}
+	if e = validateRequirement(c, q, s, id, values, nil, input); e != nil {
+		return nil, e
+	}
+	if _, set := values["remaining_minutes"]; !set {
+		if v, ok := values["estimated_minutes"]; ok {
+			values["remaining_minutes"] = v
+		}
+	}
+	// A new execution task inherits the Story's commitment only at creation.
+	if _, set := input["cycle_id"]; !set && mergedText(values, nil, "requirement_type") == "task" && mergedText(values, nil, "parent_id") != "" {
+		var cycle *uuid.UUID
+		if e = q.QueryRowContext(c.Request.Context(), `SELECT (SELECT ci.cycle_id FROM cycle_items ci JOIN cycles cy ON cy.id=ci.cycle_id AND cy.deleted_at IS NULL WHERE ci.work_item_id=$1 AND ci.deleted_at IS NULL LIMIT 1)`, values["parent_id"]).Scan(&cycle); e != nil {
+			return nil, e
+		}
+		if cycle != nil {
+			input = cloneInput(input)
+			input["cycle_id"], _ = json.Marshal(cycle)
+		}
+	}
 	var seq int64
 	e = q.QueryRowContext(c.Request.Context(), `UPDATE projects SET next_sequence=next_sequence+1 WHERE id=$1 AND workspace_id=$2 AND deleted_at IS NULL RETURNING next_sequence-1`, s.ProjectID, s.WorkspaceID).Scan(&seq)
 	if e != nil {
@@ -331,7 +369,7 @@ func (h *handler) createItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 		cols = append(cols, k)
 		args = append(args, values[k])
 		p := fmt.Sprintf("$%d", len(args))
-		if k == "description_json" {
+		if jsonColumn(k) {
 			p += "::jsonb"
 		}
 		place = append(place, p)
@@ -374,10 +412,8 @@ func (h *handler) create(c *gin.Context) {
 }
 
 func (h *handler) updateItem(c *gin.Context, q database.DBTX, s identity.Scope, id uuid.UUID, input map[string]json.RawMessage, requireVersion bool) (map[string]any, error) {
-	if _, ok := input["parent_id"]; ok {
-		if e := lockGraphs(c, q, s.ProjectID); e != nil {
-			return nil, e
-		}
+	if e := lockGraphs(c, q, s.ProjectID); e != nil {
+		return nil, e
 	}
 	_, pointSet := input["estimate_point_id"]
 	_, numericSet := input["estimate"]
@@ -390,8 +426,23 @@ func (h *handler) updateItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 	if e != nil {
 		return nil, e
 	}
+	s, e = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, identity.Guest)
+	if e != nil {
+		return nil, e
+	}
+	if s.Role < identity.Member && !s.GuestCanViewAll && old["created_by"] != s.Actor.UserID.String() {
+		return nil, absent()
+	}
 	if s.Role < identity.Member && old["created_by"] != s.Actor.UserID.String() {
 		return nil, httpapi.NewError(403, "forbidden", "Guests may change only their own work items")
+	}
+	if e = EnsureWritableProject(c.Request.Context(), q, s.WorkspaceID, s.ProjectID); e != nil {
+		return nil, e
+	}
+	if hasRequirementInput(input) {
+		if err := RequireRequirements(c.Request.Context(), q, s.WorkspaceID, s.ProjectID); err != nil {
+			return nil, err
+		}
 	}
 	var intakeStatus string
 	e = q.QueryRowContext(c.Request.Context(), `SELECT status FROM intake_items WHERE work_item_id=$1 AND deleted_at IS NULL`, id).Scan(&intakeStatus)
@@ -427,6 +478,9 @@ func (h *handler) updateItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 	if e = validateFields(c, q, s, id, values); e != nil {
 		return nil, e
 	}
+	if e = validateRequirement(c, q, s, id, values, old, input); e != nil {
+		return nil, e
+	}
 	keys := []string{}
 	for k := range values {
 		keys = append(keys, k)
@@ -437,7 +491,7 @@ func (h *handler) updateItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 	for _, k := range keys {
 		args = append(args, values[k])
 		p := fmt.Sprintf("$%d", len(args))
-		if k == "description_json" {
+		if jsonColumn(k) {
 			p += "::jsonb"
 		}
 		sets = append(sets, k+"="+p)
@@ -495,8 +549,25 @@ func (h *handler) deleteItem(c *gin.Context, q database.DBTX, s identity.Scope, 
 	if e != nil {
 		return e
 	}
+	s, e = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, identity.Guest)
+	if e != nil {
+		return e
+	}
+	if s.Role < identity.Member && !s.GuestCanViewAll && old["created_by"] != s.Actor.UserID.String() {
+		return absent()
+	}
+	var activities bool
+	if e = q.QueryRowContext(c.Request.Context(), `SELECT EXISTS(SELECT 1 FROM requirement_activities WHERE epic_id=$1 AND deleted_at IS NULL)`, id).Scan(&activities); e != nil {
+		return e
+	}
+	if activities {
+		return invalid("Move or delete this Epic's activities before deleting it")
+	}
 	if s.Role < identity.Member && old["created_by"] != s.Actor.UserID.String() {
 		return httpapi.NewError(403, "forbidden", "Guests may delete only their own work items")
+	}
+	if e = EnsureWritableProject(c.Request.Context(), q, s.WorkspaceID, s.ProjectID); e != nil {
+		return e
 	}
 	if _, e = q.ExecContext(c.Request.Context(), `UPDATE work_items SET deleted_at=now(),updated_at=now(),updated_by=$2,version=version+1 WHERE id=$1`, id, s.Actor.UserID); e != nil {
 		return e
@@ -598,7 +669,11 @@ func (h *handler) duplicate(c *gin.Context) {
 			return e
 		}
 		input := map[string]json.RawMessage{}
-		for _, k := range []string{"name", "description_html", "description_json", "state_id", "priority", "assignee_ids", "label_ids", "start_date", "target_date", "estimate", "module_ids", "cycle_id"} {
+		copyFields := []string{"name", "description_html", "description_json", "state_id", "priority", "assignee_ids", "label_ids", "start_date", "target_date", "estimate", "module_ids", "cycle_id", "parent_id", "dependency_ids"}
+		if hasRequirementData(item) {
+			copyFields = append(copyFields, "requirement_type", "story_role", "story_goal", "story_benefit", "acceptance_criteria", "activity_id", "map_position", "estimated_minutes", "remaining_minutes", "required_skills", "allocation_weights")
+		}
+		for _, k := range copyFields {
 			if v, ok := item[k]; ok {
 				input[k], _ = json.Marshal(v)
 			}
@@ -606,6 +681,9 @@ func (h *handler) duplicate(c *gin.Context) {
 		if point := item["estimate_point_id"]; point != nil {
 			delete(input, "estimate")
 			input["estimate_point_id"], _ = json.Marshal(point)
+		}
+		if weights, ok := item["allocation_weights"].([]any); ok && len(weights) == 0 {
+			delete(input, "allocation_weights")
 		}
 		name := []rune(item["name"].(string))
 		if len(name) > 248 {
@@ -677,13 +755,12 @@ func (h *handler) move(c *gin.Context) {
 		if _, e := q.ExecContext(c.Request.Context(), `SELECT id FROM project_members WHERE workspace_id=$1 AND user_id=$2 AND project_id IN($3,$4) ORDER BY project_id,id FOR SHARE`, s.WorkspaceID, s.Actor.UserID, s.ProjectID, target.ProjectID); e != nil {
 			return e
 		}
-		policy := identity.SQLPolicy{DB: q}
 		var accessErr error
-		s, accessErr = policy.Project(c.Request.Context(), s.Actor, s.WorkspaceID, s.ProjectID, identity.Member)
+		s, accessErr = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, s.ProjectID, identity.Member)
 		if accessErr != nil {
 			return accessErr
 		}
-		target, accessErr = policy.Project(c.Request.Context(), s.Actor, s.WorkspaceID, target.ProjectID, identity.Member)
+		target, accessErr = CurrentScope(c.Request.Context(), q, s.Actor, s.WorkspaceID, target.ProjectID, identity.Member)
 		if accessErr != nil {
 			return accessErr
 		}
@@ -745,7 +822,7 @@ func (h *handler) move(c *gin.Context) {
 		if _, e = q.ExecContext(c.Request.Context(), `UPDATE work_item_subscribers sub SET deleted_at=now(),updated_at=now() WHERE sub.work_item_id=$1 AND sub.deleted_at IS NULL AND NOT EXISTS(SELECT 1 FROM workspace_members wm JOIN users u ON u.id=wm.user_id AND u.is_active AND u.deleted_at IS NULL JOIN projects p ON p.workspace_id=wm.workspace_id LEFT JOIN project_members pm ON pm.project_id=p.id AND pm.user_id=wm.user_id AND pm.is_active AND pm.deleted_at IS NULL WHERE wm.workspace_id=$2 AND wm.user_id=sub.user_id AND wm.is_active AND wm.deleted_at IS NULL AND p.id=$3 AND (p.network='public' OR pm.id IS NOT NULL))`, id, s.WorkspaceID, target.ProjectID); e != nil {
 			return e
 		}
-		values["project_id"], values["sequence_id"], values["parent_id"] = target.ProjectID, seq, nil
+		values["project_id"], values["sequence_id"], values["parent_id"], values["activity_id"], values["allocation_weights"] = target.ProjectID, seq, nil, nil, "[]"
 		if _, selected := body.Changes["estimate_point_id"]; !selected {
 			values["estimate_point_id"], values["estimate"] = nil, nil
 		}

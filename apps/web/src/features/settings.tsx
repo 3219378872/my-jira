@@ -1,4 +1,10 @@
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { observer } from "mobx-react-lite";
 import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -37,6 +43,7 @@ import {
 } from "../lib/api";
 import { useMutation, useRemote, useScope } from "../lib/hooks";
 import { dateTime, memberName } from "../lib/utils";
+import { requirementsEnabled } from "../lib/project-features";
 import {
   Avatar,
   Badge,
@@ -231,6 +238,12 @@ export function ToggleSetting({
 const GeneralSettings = observer(function GeneralSettings() {
   const { workspace, project } = useScope();
   const resource = project ?? workspace;
+  const activeSettingsResource = useRef(resource.id);
+  activeSettingsResource.current = resource.id;
+  const settingsWriteSequence = useRef(0);
+  const requirementsBaseline = useRef(
+    project ? requirementsEnabled(project) : true,
+  );
   const [form, setForm] = useState({
     name: resource.name,
     description: resource.description,
@@ -240,6 +253,7 @@ const GeneralSettings = observer(function GeneralSettings() {
     guest_can_view_all: project?.guest_can_view_all ?? false,
     timezone: workspace.timezone,
     cover_image_url: project?.cover_image_url ?? "",
+    requirements_enabled: project ? requirementsEnabled(project) : true,
     features: {
       cycles: true,
       modules: true,
@@ -256,6 +270,10 @@ const GeneralSettings = observer(function GeneralSettings() {
   const navigate = useNavigate();
   const t = appStore.t;
   useEffect(() => {
+    settingsWriteSequence.current++;
+    requirementsBaseline.current = project
+      ? requirementsEnabled(project)
+      : true;
     setForm({
       name: resource.name,
       description: resource.description,
@@ -265,6 +283,7 @@ const GeneralSettings = observer(function GeneralSettings() {
       guest_can_view_all: project?.guest_can_view_all ?? false,
       timezone: workspace.timezone,
       cover_image_url: project?.cover_image_url ?? "",
+      requirements_enabled: project ? requirementsEnabled(project) : true,
       features: {
         cycles: true,
         modules: true,
@@ -280,9 +299,13 @@ const GeneralSettings = observer(function GeneralSettings() {
     : workspacePath(workspace.id);
   const submit = async (event: FormEvent) => {
     event.preventDefault();
+    if (mutation.busy) return;
+    const submittedResource = resource.id;
+    const submittedRequirements = form.requirements_enabled;
+    const writeSequence = ++settingsWriteSequence.current;
     await mutation.execute(
       async () => {
-        await api.patch<Workspace | Project>(
+        const saved = await api.patch<Workspace | Project>(
           base,
           project
             ? {
@@ -293,6 +316,13 @@ const GeneralSettings = observer(function GeneralSettings() {
                 guest_can_view_all: form.guest_can_view_all,
                 cover_image_url: form.cover_image_url || null,
                 features: form.features,
+                ...(form.requirements_enabled !== requirementsBaseline.current
+                  ? {
+                      settings: {
+                        requirements_enabled: form.requirements_enabled,
+                      },
+                    }
+                  : {}),
               }
             : {
                 name: form.name,
@@ -301,6 +331,19 @@ const GeneralSettings = observer(function GeneralSettings() {
                 timezone: form.timezone,
               },
         );
+        if (
+          project &&
+          activeSettingsResource.current === submittedResource &&
+          settingsWriteSequence.current === writeSequence
+        ) {
+          const enabled = requirementsEnabled(saved.data as Project);
+          requirementsBaseline.current = enabled;
+          setForm((current) =>
+            current.requirements_enabled === submittedRequirements
+              ? { ...current, requirements_enabled: enabled }
+              : current,
+          );
+        }
         await appStore.loadWorkspaces();
         await appStore.loadProjects(workspace.id);
         if (!project && workspace.slug !== form.slug)
@@ -449,6 +492,22 @@ const GeneralSettings = observer(function GeneralSettings() {
                 <h2>{t("项目功能", "Project features")}</h2>
               </div>
               <div className="settings-panel-body">
+                <ToggleSetting
+                  label={t(
+                    "需求工作台（四视图）",
+                    "Requirements workspace (four views)",
+                  )}
+                  checked={form.requirements_enabled}
+                  onChange={(requirements_enabled) =>
+                    setForm({ ...form, requirements_enabled })
+                  }
+                />
+                <p className="settings-note">
+                  {t(
+                    "统一启用故事地图、层级甘特、成员排期、业务场景和 UML。关闭后保留已有数据，基础工作项继续可用。AI 自动应用仍由项目策略单独控制。",
+                    "Enable the story map, hierarchical Gantt, member schedule, business scenarios and UML together. Disabling preserves existing data and keeps basic work items available. AI application remains controlled by its separate project policy.",
+                  )}
+                </p>
                 <ToggleSetting
                   label={t(
                     "来宾可以查看项目全部工作",

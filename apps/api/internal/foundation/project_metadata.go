@@ -72,6 +72,11 @@ func validateProjectCover(value any) (string, error) {
 }
 
 func validateProjectSettings(settings map[string]any) error {
+	if value, present := settings["requirements_enabled"]; present && value != nil {
+		if _, ok := value.(bool); !ok {
+			return apperror.Invalid("requirements_enabled must be true, false or null")
+		}
+	}
 	for _, key := range []string{"automation", "estimate_id", "estimate", "estimates", "estimate_settings", "guest_can_view_all"} {
 		if _, exists := settings[key]; exists {
 			return apperror.Invalid("Use the dedicated project settings endpoint for " + key)

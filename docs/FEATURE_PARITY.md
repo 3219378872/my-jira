@@ -1,5 +1,9 @@
 # 功能覆盖与复刻状态
 
+本矩阵 F01–F29 记录原 Plane 社区范围。2026-09-12 新增的三阶段需求独立
+追踪于[37 条故事基线](REQUIREMENTS_BASELINE.md)、[12 个 Sprint 计划](ITERATION_PLAN.md)
+与[新增验收记录](REQUIREMENTS_VALIDATION.md)。旧矩阵的“已实现”不表示新增范围已验收。
+
 基准目录：`/home/dev/found/plane`。基准提交：
 `1fec307f91003df96351557af32ce87891a3678a`。清点日期：2026-09-09；参考工作树干净。
 

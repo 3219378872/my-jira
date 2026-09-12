@@ -8,7 +8,6 @@ import (
 	"io"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"strings"
 	"testing"
 
@@ -141,14 +140,7 @@ func TestModuleLinksAndPageResources(t *testing.T) {
 }
 
 func TestAnalysisReportPersistsAndRechecksDownload(t *testing.T) {
-	endpoint := os.Getenv("TEST_S3_ENDPOINT")
-	if endpoint == "" {
-		t.Skip("TEST_S3_ENDPOINT is required for isolated object-store integration")
-	}
-	t.Setenv("S3_ENDPOINT", endpoint)
-	t.Setenv("S3_BUCKET", "test-report-"+uuid.NewString())
-	t.Setenv("S3_ACCESS_KEY", "myjira_local")
-	t.Setenv("S3_SECRET_KEY", "myjira_local_storage")
+	testutil.ObjectStoreEnvironment(t)
 	f := testutil.New(t)
 	r := f.Router(support.Register, integrations.Register)
 	f.Issue(t, f.ProjectID, f.StateID, f.OwnerID, "Visible", 1)

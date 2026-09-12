@@ -52,6 +52,12 @@ func (s *Server) setCookie(c *gin.Context, name, value string, maxAge int, httpO
 // request before any handler. API token/public surfaces mount their own policy.
 func (s *Server) Middleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		// GitHub deliveries use a separately verified HMAC and delivery identity.
+		// This exact route never receives a browser or workspace-token actor.
+		if c.Request.Method == http.MethodPost && c.Request.URL.Path == "/api/v1/github/webhook" {
+			c.Next()
+			return
+		}
 		origin := c.GetHeader("Origin")
 		allowedOrigin := origin == ""
 		for _, allowed := range strings.Split(s.Config.AppOrigin, ",") {
@@ -81,8 +87,7 @@ func (s *Server) Middleware() gin.HandlerFunc {
 				return
 			}
 			var actor identity.Actor
-			var tokenID uuid.UUID
-			err := s.Deps.DB.SQL.QueryRowContext(c.Request.Context(), `SELECT t.id,u.id,t.workspace_id FROM api_tokens t JOIN users u ON u.id=t.user_id WHERE t.token_hash=$1 AND t.revoked_at IS NULL AND (t.expires_at IS NULL OR t.expires_at>now()) AND t.deleted_at IS NULL AND u.is_active AND u.deleted_at IS NULL`, hashToken(strings.TrimSpace(strings.TrimPrefix(authorization, "Bearer ")))).Scan(&tokenID, &actor.UserID, &actor.TokenWorkspaceID)
+			err := s.Deps.DB.SQL.QueryRowContext(c.Request.Context(), `SELECT t.id,u.id,t.workspace_id FROM api_tokens t JOIN users u ON u.id=t.user_id WHERE t.token_hash=$1 AND t.revoked_at IS NULL AND (t.expires_at IS NULL OR t.expires_at>now()) AND t.deleted_at IS NULL AND u.is_active AND u.deleted_at IS NULL`, hashToken(strings.TrimSpace(strings.TrimPrefix(authorization, "Bearer ")))).Scan(&actor.TokenID, &actor.UserID, &actor.TokenWorkspaceID)
 			if err == sql.ErrNoRows {
 				httpapi.Fail(c, apperror.Unauthorized())
 				return
@@ -96,7 +101,7 @@ func (s *Server) Middleware() gin.HandlerFunc {
 				return
 			}
 			c.Set(httpapi.ActorKey, actor)
-			if _, err = s.Deps.DB.SQL.ExecContext(c.Request.Context(), `UPDATE api_tokens SET last_used_at=now(),updated_at=now() WHERE id=$1`, tokenID); err != nil {
+			if _, err = s.Deps.DB.SQL.ExecContext(c.Request.Context(), `UPDATE api_tokens SET last_used_at=now(),updated_at=now() WHERE id=$1`, actor.TokenID); err != nil {
 				httpapi.Fail(c, err)
 				return
 			}

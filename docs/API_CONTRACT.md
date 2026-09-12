@@ -1,5 +1,11 @@
 # Original API contract
 
+The requirements iteration adds project-scoped snapshots/SSE, versioned atomic
+planning commands, resources, structured scenarios/SVG, automation and quality.
+See [requirements operations](REQUIREMENTS_OPERATIONS.md) and the generated
+[OpenAPI contract](openapi.json) for exact inputs, statuses and authorization.
+GitHub HMAC ingress, browser sessions and workspace tokens remain distinct.
+
 This API is independently designed for my-jira. It does not provide Plane API
 compatibility. All browser JSON routes use `/api/v1`; UUIDs identify resources.
 

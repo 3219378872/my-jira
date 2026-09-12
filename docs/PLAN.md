@@ -1,5 +1,10 @@
 # Plane 完整复刻实施计划
 
+2026-09-12 新增范围：[三阶段迭代计划](ITERATION_PLAN.md)与
+[需求基线](REQUIREMENTS_BASELINE.md)覆盖 37 条故事、12 个 Sprint。
+本文件以下“完成”仅指原 Plane 社区复刻范围；四视图及六类 AI 的实施与
+验收另见[本轮验证记录](REQUIREMENTS_VALIDATION.md)，不能继承旧版完成结论。
+
 状态：本地社区功能范围已完成原创实现与本地验收，正式容器运行于 `http://127.0.0.1:4180`。
 日期：2026-09-09。已修差距与验证边界见 `PARITY_GAPS.md`，执行证据见 `VALIDATION.md`。
 

@@ -87,6 +87,18 @@ const navItems = [
 
 const projectItems = [
   { path: "issues", zh: "工作项", en: "Work items", icon: ListTodo },
+  {
+    path: "requirements",
+    zh: "需求工作台",
+    en: "Requirements",
+    icon: LayoutGrid,
+  },
+  {
+    path: "automation",
+    zh: "AI 与自动化",
+    en: "AI and automation",
+    icon: Sparkles,
+  },
   { path: "cycles", zh: "迭代周期", en: "Cycles", icon: Sparkles },
   { path: "modules", zh: "功能模块", en: "Modules", icon: Boxes },
   { path: "views", zh: "项目视图", en: "Views", icon: LayoutGrid },

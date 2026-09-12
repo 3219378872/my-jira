@@ -63,6 +63,16 @@ const PlanningPage = lazy(() =>
     default: module.PlanningPage,
   })),
 );
+const RequirementsPage = lazy(() =>
+  import("./features/requirements/requirements-page").then((module) => ({
+    default: module.RequirementsPage,
+  })),
+);
+const AutomationPage = lazy(() =>
+  import("./features/automation/automation-page").then((module) => ({
+    default: module.AutomationPage,
+  })),
+);
 const ViewsPage = lazy(() =>
   import("./features/planning").then((module) => ({
     default: module.ViewsPage,
@@ -270,6 +280,18 @@ const App = observer(function App() {
                   <Route
                     path="projects/:projectId/archives"
                     element={<IssuesPage archived />}
+                  />
+                  <Route
+                    path="projects/:projectId/requirements"
+                    element={<Navigate to="story-map" replace />}
+                  />
+                  <Route
+                    path="projects/:projectId/requirements/:requirementView"
+                    element={<RequirementsPage />}
+                  />
+                  <Route
+                    path="projects/:projectId/automation"
+                    element={<AutomationPage />}
                   />
                   <Route
                     path="projects/:projectId/cycles"

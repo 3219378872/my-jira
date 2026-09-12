@@ -107,6 +107,9 @@ func schemas() S {
 	s["RichTextNode"] = object(S{"type": stringSchema(), "text": stringSchema(), "attrs": freeObject(), "content": array(ref("RichTextNode")), "marks": array(object(S{"type": stringSchema(), "attrs": freeObject()}, "type"))})
 	s["RichTextNode"].(S)["additionalProperties"] = true
 	issueFields := S{"name": name, "description_html": stringSchema(), "description_json": ref("RichTextNode"), "state_id": uuidSchema(), "priority": enum("none", "low", "medium", "high", "urgent"), "parent_id": nullable(uuidSchema()), "position": numberSchema(), "start_date": nullable(dateSchema()), "target_date": nullable(dateSchema()), "estimate": nullable(numberSchema()), "estimate_point_id": nullable(uuidSchema()), "assignee_ids": array(uuidSchema()), "label_ids": array(uuidSchema()), "cycle_id": nullable(uuidSchema()), "module_ids": array(uuidSchema()), "is_draft": boolSchema(), "archived_at": nullable(timestamp()), "type_name": stringSchema()}
+	for field, schema := range requirementItemFields() {
+		issueFields[field] = schema
+	}
 	s["WorkItemCreate"] = object(issueFields, "name")
 	s["WorkItemChanges"] = object(issueFields)
 	issuePatch := S{}
@@ -146,5 +149,6 @@ func schemas() S {
 	addSupportSchemas(s, name, color)
 	addIntegrationSchemas(s, name)
 	addServiceSchemas(s)
+	addRequirementsSchemas(s)
 	return s
 }
